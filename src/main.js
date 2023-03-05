@@ -9,7 +9,7 @@ const Admins = require('../models/Admins');
 let mainWindow; //
 let secondWindow; //para ver vistas de detalle
 let loginWindow; //primera ventana que va a ver el cliente
-//proyecto 
+
 function crearVentanaLogin() {
     loginWindow = new BrowserWindow({
         width: 600,
