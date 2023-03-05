@@ -5,6 +5,7 @@ const path = require('path');
 const url = require('url');
 const fs = require('fs');
 const Admins = require('../models/Admins');
+//Daniel
 //Johan
 let mainWindow; //
 let secondWindow; //para ver vistas de detalle
