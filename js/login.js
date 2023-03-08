@@ -1,6 +1,6 @@
 const { ipcRenderer } = require("electron"); //ipc enviamos eventos para ser escuchados en el main
 
-
+ipcRenderer.send('check-google');//Con este evento validamos la sesión del usuario.
 
 //cuando se da click que se cierre la ventana
 $("#closebtn").click(function (evento) {
@@ -24,10 +24,10 @@ ipcRenderer.on("GoogleAuthFail", () => {
 });
 
 ipcRenderer.on("LoginSuccess", () => {
+    $("#loginGoogle").addClass('visually-hidden');
     $("#loading").addClass('visually-hidden');
     $("#success_login").removeClass('visually-hidden');
-   /*  setTimeout(function () {
-        $("#loginGoogle").removeClass('visually-hidden');
-        $("#success_login").addClass('visually-hidden');
-    }, 5000); */
+    setTimeout(function () {
+        ipcRenderer.send('validate-google',{ width : window.screen.availWidth, height : window.screen.availHeight});
+    }, 5000);
 });

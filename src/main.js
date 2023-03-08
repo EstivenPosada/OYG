@@ -6,9 +6,26 @@ const url = require('url');
 const fs = require('fs');
 const Admins = require('../models/Admins');
 
+let widthA = [640,854,800,1024,1152,1280,1360,1366,1440,1600,1680,1920];
+let heightA = [480,576,600,720,768,800,864,900];
+
 let mainWindow; //
 let secondWindow; //para ver vistas de detalle
 let loginWindow; //primera ventana que va a ver el cliente
+
+ipcMain.on('check-google' , async (e)=>{
+    if(settings.hasSync('userAccount')){
+        loginWindow.webContents.send('LoginSuccess');
+    }
+});
+
+ipcMain.on('logoutGoogle', async(e)=>{
+    settings.unsetSync(); //Borra la data del usuario en settings
+    crearVentanaLogin();
+    mainWindow.destroy();
+    loginWindow.focus();
+    loginWindow.show();
+});
 
 function crearVentanaLogin() {
     loginWindow = new BrowserWindow({
@@ -68,7 +85,60 @@ ipcMain.on("GoogleAuthSucces", async (e, user) => {
     }
 });
 
+ipcMain.on('validate-google', async(e, args)=>{
+    if(settings.hasSync('userAccount')){
+        userAccount = await settings.get('userAccount');
+        createWindow(args,userAccount);
+        loginWindow.destroy();
+    }
+});
 
+function createWindow(args, userAccount){
+    mainWindow = new BrowserWindow({
+        width: calcSize(args.width, widthA),
+        height: calcSize(args.height, heightA),
+        webPreferences:{
+            nodeIntegration: true,
+            contextIsolation: false,
+            enableRemoteModule: true,
+        },
+        autoHideMenuBar: true,
+	    center:true,
+    	roundedCorners:true	 
+    });
+    mainWindow.setTitle('OYG');
+    mainWindow.loadURL(url.format({
+        pathname: path.join(__dirname,"../views/index.html"),
+        protocol: 'file',
+        slashes: true
+    }));
+    mainWindow.on('ready-to-show', (e)=>{
+        mainWindow.webContents.send('data-user', userAccount);
+    });
+}
+
+function calcSize(value, array)
+{
+	let result = array[0]
+	array.forEach(element => {
+	  	if(element<value)
+	    	result = element
+	});
+	return result
+}
+
+ipcMain.on('change-window',async (e,args)=>{
+    mainWindow.loadURL(url.format({
+        pathname: path.join(__dirname,args.ruta),
+        protocol: 'file',
+        slashes: true
+    }));
+    mainWindow.setTitle(args.title);
+    let userAccount = await settings.get('userAccount')
+	mainWindow.on('ready-to-show',(e)=>{
+		mainWindow.webContents.send('data-user',userAccount)
+	});
+});
 
 
 

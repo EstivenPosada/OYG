@@ -1,0 +1,284 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    font-family: 'Open Sans', sans-serif;
+}
+
+body {
+    margin-left: 80px;
+    /*margin-top: 80px;*/
+    transition: margin-left 300ms cubic-bezier(0.785, 0.135, 0.15, 0.86);
+}
+
+main {
+    padding-top: 6rem;
+    padding-left: 4rem;
+    padding-right: 4rem;
+    /*padding-bottom: 4rem;*/
+}
+/*
+header {
+    width: 100%;
+    height: 80px;
+    background: #f5f5f5;
+    display: flex;
+    z-index: 200;
+    position: absolute;
+    top: 0;
+    align-items: center;
+}
+*/
+.icon__menu {
+    width: 50px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: translateX(10px);
+}
+
+.icon__menu i {
+    font-size: 1.2rem;
+    cursor: pointer;
+    position: absolute;
+}
+
+.menu__side {
+    width: 80px;
+    height: 100%;
+    background: #1783db;
+    position: fixed;
+    top: 0;
+    left: 0;
+    color: white;
+    font-size: 18px;
+    z-index: 300;
+    overflow: hidden;
+    overflow-y: scroll;
+    border-right: 20px solid #1783db;
+    transition: all 300ms cubic-bezier(0.785, 0.135, 0.15, 0.86);
+}
+
+/*Ocultar scroll para chrome, safari y opera*/
+.menu__side::-webkit-scrollbar {
+    display: none;
+}
+
+/*Ocultar scroll para IE, Edge y Firefox*/
+.menu__side {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+
+.name__page {
+    padding: 20px 30px;
+    font-size: 1.5rem !important;
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.name__page h4{
+    font-size: 1.2rem !important;
+}
+
+.name__page i {
+
+    width: 20px;
+    margin-right: 20px;
+}
+
+.options__menu {
+    padding: 20px 30px;
+    position: absolute;
+    width: 100%;
+    top: 80px;
+}
+
+.options__menu a {
+    color: #ffffff;
+    font-size: 1rem;
+    text-decoration: none;
+    cursor: default;
+    display: block;
+    position: relative;
+    transition: color 300ms;
+}
+
+.options__menu a:hover {
+    color: #fff;
+    text-shadow: 3px 3px 3px black;
+    font-size: 1.2rem !important;
+    font-weight: bold !important;
+}
+
+.options__menu .option {
+    padding: 20px 0px;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.options__menu .option i {
+    width: 20px;
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+.options__menu .option h4 {
+    font-size: 1rem;
+    font-weight: 300;
+    cursor: pointer;
+}
+
+a.selected {
+    color: #fff;
+}
+
+.selected:before {
+    content: '';
+    width: 3px;
+    height: 80%;
+    background: white;
+    position: absolute;
+    top: 10%;
+    left: -30px;
+}
+
+/*Clases para usar en JavaScript*/
+
+.body_move {
+    margin-left: 15rem;
+}
+
+.menu__side_move {
+    width: 15rem;
+}
+
+
+@media screen and (max-width: 760px) {
+    .body_move {
+        margin-left: 0px;
+    }
+
+    .menu__side_move {
+        width: 80px;
+        left: -80px;
+    }
+}
+
+/* Las opciones del menú lateral se desplazan un poco a la derecha */
+.options__menu .contenido {
+    position: relative;
+    /* margin: 10px 10px; */
+    left: -30px;
+}
+
+/* Posiciona el signo más a 5px de la derecha. Lo centra utilizando la propiedad transform. */
+
+.options__menu .contenedor .submenu::before {
+    font-family: "FontAwesome";
+    content: '\f078';
+    color: white;
+    position: absolute;
+    top: 50%;
+    right: -5px;
+    font-size: 1.2rem;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.options__menu .contenedor.activa .submenu::before {
+    font-family: "FontAwesome";
+    content: '\f077';
+    font-size: 1.2rem;
+}
+
+/* Oculta el contenido (altura: 0), disminuye el tamaño de la fuente, justifica el texto y añade la transición */
+
+.contenido {
+    position: relative;
+    /* background: rgb(75, 192, 255); */
+    height: 0;
+    font-size: 1.2rem;
+    text-align: justify;
+    /* width: 780px; */
+    overflow: hidden;
+    transition: 0.5s;
+}
+
+.options__menu .contenedor.activa .contenido {
+    height: auto;
+}
+
+.badge {
+    display: inline-block;
+    padding: 0.25em 0.4em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
+    -webkit-transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+    -o-transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+}
+
+.bg-success {
+    color: #fff;
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.bg-danger {
+    color: #fff;
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+/*.bg-success {
+  background-color: #28a745 !important;
+} 
+
+.bg-danger {
+  background-color: #dc3545 !important;
+}
+*/
+.btn-fa-pen{
+    background-color: transparent;
+    border-color: #1783db;
+    width: 1.5rem;
+    height: 1.5rem;
+}
+.btn-fa-pen:hover{
+    background-color: #1783db;
+    border-color: #1783db;
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.btn-fa-eye{
+    background-color: transparent;
+    border-color: orange;
+    width: 1.5rem;
+    height: 1.5rem;
+}
+.btn-fa-eye:hover{
+    background-color: orange;
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+/* .fa-eye::before{
+    background: red;
+    color: blue;
+} */
