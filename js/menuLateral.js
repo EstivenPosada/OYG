@@ -31,7 +31,7 @@ window.addEventListener("resize", function () {
     if (window.innerWidth > 760) {
 
         body.classList.remove("body_move");
-        side_menu.classList.remove("menu__side_move");
+       
     }
 
     if (window.innerWidth < 760) {
@@ -55,7 +55,7 @@ const itemsMenu = [
     {
         icon: "fas fa-shop",
         title: "Herramientas",
-        ruta: ""
+        ruta: "../views/herramientas.html"
     },
     {
         icon: "fas fa-right-from-bracket",
@@ -66,16 +66,10 @@ const itemsMenu = [
 
 function agregarMenuLateral(itemsMenu){
     menuLateral.innerHTML +=`
-                        <header>
-                            <div class="icon__menu">
-                                <i class="fas fa-bars" id="btn_open"></i>
-                            </div>
-                        </header>
-
                         <div id="menu_side" class="menu__side">
     
                             <div class="name__page">
-                                    <i class="fab fa-youtube" title="LOGO" ></i>
+                                    <i class="fab fa-youtube" title="Ingenieria" ></i>
                                     <h4> OYG INGENIERIA</h4>
                             </div>
                             <div class="options__menu">

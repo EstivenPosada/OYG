@@ -70,7 +70,7 @@
         </style>    
     </head>
     
-    <body id="body" onload="loader('#idEmpleados')">
+    <body id="body" onload="loader('#idHerramientas')">
         <div name="menuLateral"></div>
         <div id="spinner" class="d-flex justify-content-center align-middle">
             <div class="spinner" role="status">
@@ -78,17 +78,15 @@
             </div>
         </div>
         <main class="">
-            <div id="divEmpleados" class="container my-4 visually-hidden">
-                <center> <h4><b id="selectedTitle">Empleados</b></h4></center>
-                <div class="row mt-">
+            <div id="divHerramientas" class="container my-4 visually-hidden">
+                <center> <h4><b id="selectedTitle">Herramientas</b></h4></center>
+                <div class="row mt-4">
                     <table id="listaEmpleados" class="table table-striped text-center" width="100%">
                         <thead>
                             <tr>
-                                <th scope="col"><div align="center">Nombres</div></th>
-                                <th scope="col"><div align="center">Apellidos</div></th>
-                                <th scope="col"><div align="center">Email</div></th>
+                                <th scope="col"><div align="center">Nombre</div></th>
+                                <th scope="col"><div align="center">Cantidad</div></th>
                                 <th scope="col"><div align="center">Estado</div></th>
-                                <th scope="col"><div align="center">Acciones</div></th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -98,5 +96,5 @@
         </main>
     </body>
     <script src="../js/menuLateral.js"></script>
-    <script src="../js/empleados.js"></script>
+    <script src="../js/herramientas.js"></script>
 </html>

@@ -37,16 +37,16 @@ header{
     justify-content: center;
     align-items: center;
     transform: translateX(10px);
-}
+} 
 
 .icon__menu i{
     font-size: 20px;
     cursor: pointer;
     position: absolute;
-}
+} 
 
 .menu__side{
-    width: 80px;
+    width: 200px;
     height: 100%;
     background: #db0f2e;
     position: fixed;
@@ -54,7 +54,7 @@ header{
     left: 0;
     color: white;
     font-size: 18px;
-    z-index: 300;
+    z-index: 300; /**/
     overflow: hidden;
     overflow-y: scroll;
     border-right: 20px solid #db0f2e;
@@ -99,7 +99,7 @@ header{
 }
 
 .options__menu a:hover{
-    color: white;
+    color: rgb(236, 195, 195);
 }
 
 .options__menu .option{
@@ -116,12 +116,12 @@ header{
 }
 
 .options__menu .option h4{
-    font-weight: 300;
+    font-weight: 30;
     cursor: pointer;
 }
 
 a.selected{
-    color: #5f0707;
+    color: #620d0d;
 }
 
 .selected:before{
@@ -148,7 +148,7 @@ a.selected{
         margin-left: 0px;
     }
 
-    .menu__side_move{
+   .menu__side_move{
         width: 80px;
         left: -80px;
     }
@@ -157,8 +157,6 @@ a.selected{
 .card-text{
     width: 70%;
     text-align: center;
-
-
 }
 
 .card-text2{
