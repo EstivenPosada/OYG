@@ -7,6 +7,8 @@ $("#btn_open").on("click", open_close_menu);
 var side_menu = document.getElementById("menu_side");
 var btn_open = document.getElementById("btn_open");
 var body = document.getElementById("body");
+//Agregamos el menú lateral a una constante
+const menuLateral = document.querySelector("div[name='menuLateral']");
 
 //Evento para mostrar y ocultar menú
 function open_close_menu() {
@@ -63,11 +65,22 @@ const itemsMenu = [
 ];
 
 function agregarMenuLateral(itemsMenu){
-    side_menu.innerHTML +=`<div class="name__page">
-                                <i class="fab fa-youtube" title="LOGO" ></i>
-                                <h4> OYG INGENIERIA</h4>
+    menuLateral.innerHTML +=`
+                        <header>
+                            <div class="icon__menu">
+                                <i class="fas fa-bars" id="btn_open"></i>
                             </div>
-                            <div class="options__menu"></div>`;
+                        </header>
+
+                        <div id="menu_side" class="menu__side">
+    
+                            <div class="name__page">
+                                    <i class="fab fa-youtube" title="LOGO" ></i>
+                                    <h4> OYG INGENIERIA</h4>
+                            </div>
+                            <div class="options__menu">
+                            </div>
+                        </div>`;
     
     var optionsMenu = document.querySelector("div[class='options__menu']");                            
     
