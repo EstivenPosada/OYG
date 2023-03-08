@@ -153,3 +153,31 @@ a.selected{
         left: -80px;
     }
 }
+
+.card-text{
+    width: 70%;
+    text-align: center;
+
+
+}
+
+.card-text2{
+    width: 100%;
+}
+
+.imagen{
+   /* background-image: url(../assets/Ingenieria.jpg); */
+  /*background-position: 50px 25px;*/
+    /*background-position: 20% 10%;*/
+    /*background-position: center center;  
+    height: 1800px;
+    background-attachment: fixed;  */
+    background: url(../assets/Ingenieria.jpg) no-repeat center center fixed;
+    background-size: cover;
+}
+
+.contenedor{
+    justify-content: center;
+}
+
+
