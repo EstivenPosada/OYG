@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+   <header > 
     <head>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -68,6 +69,7 @@
                to {transform: rotate(359deg);}
             }    
         </style>    
+        </header>
     </head>
     
     <body id="body" onload="loader('#idEmpleados')">
@@ -77,6 +79,7 @@
                 <span class="visually-hidden">Loading...</span>
             </div>
         </div>
+        
         <main class="">
             <div id="divEmpleados" class="container my-4 visually-hidden">
                 <center> <h4><b id="selectedTitle">Empleados</b></h4></center>
@@ -95,8 +98,20 @@
                     </table>
                 </div>
             </div>
+        
+            <div class="form-group text-end m-t-10">
+                <button class="btn btn-success " type="submit">
+                    <a href=""class="link-dark">Nuevo </a> 
+                </button>
+                <button class="btn btn-danger">
+                    <a href="index.html" class="link-dark">Regresar</a> 
+                </button> 
+                
+        </div>
         </main>
+  
     </body>
+    
     <script src="../js/menuLateral.js"></script>
     <script src="../js/empleados.js"></script>
 </html>
