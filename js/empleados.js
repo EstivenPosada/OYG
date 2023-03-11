@@ -1,3 +1,5 @@
+const Swal = require('sweetalert2');
+
 setTimeout(() => {
     $("#divEmpleados").removeClass('visually-hidden');
     $("#spinner").addClass('visually-hidden');
@@ -102,7 +104,7 @@ function renderEmpleados(empleados)
             "targets": 5,
             data: '_id',
             render: function(data){
-                return "<div class='btn-group' role='group' aria-label='Basic example'><button type='button' class='btn btn-sm btn-outline-warning' onclick='statusAsociado("+`"`+data+`"`+")' title='Cambiar Estado'><i class='bi bi-toggles'></i></button><button type='button' class='btn btn-sm btn-outline-success' onclick='actualizarDatosAsociado("+`"`+data+`"`+")' title='Editar'><i class='bi bi-pencil-square'></i></button><button type='button' class='btn btn-sm btn-outline-info' onclick='verInfoUsuario("+`"`+data+`"`+")' title='Ver Info'><i class='bi bi-eye'></i></button></div>"
+                return "<div class='btn-group' role='group' aria-label='Basic example'><button type='button' class='btn btn-sm btn-outline-warning' onclick='statusEmpleado("+`"`+data+`"`+")' title='Cambiar Estado'><i class='bi bi-toggles'></i></button><button type='button' class='btn btn-sm btn-outline-success' onclick='actualizarDatosEmpleado("+`"`+data+`"`+")' title='Editar'><i class='bi bi-pencil-square'></i></button><button type='button' class='btn btn-sm btn-outline-info' onclick='verInfoEmpleado("+`"`+data+`"`+")' title='Ver Info'><i class='bi bi-eye'></i></button></div>"
             },
             "orderable": false
         },
@@ -132,3 +134,61 @@ function nuevoEmpleado(){
         info: null,
     });
 };
+
+function statusEmpleado(id){
+    Swal.fire(
+        {
+            title: '¿Quieres cambiar el estado del empleado?',
+            icon: 'question',
+            confirmButtonText: 'Si',
+            showDenyButton: true,
+            denyButtonText: "No",
+            confirmButtonColor: '#008000',
+        }
+    ).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+            ipcRenderer.send('cambiarEstadoEmpleado', {id:id});
+        } else if (result.isDenied) {
+            Swal.fire({title:'Acción cancelada', icon:'info', showConfirmButton:false,timer:1500})
+        };
+    });    
+};
+
+ipcRenderer.on('cambiarEstadoEmpleadoSuccess', ()=>{
+    Swal.fire(
+        {
+            title: 'Acción Exitosa!',
+            text: 'El estado del empleado se actualizó correctamente!',
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false
+        }
+    ).then(
+        setTimeout(()=>{
+            ipcRenderer.send('getEmpleados');
+        },2000) 
+    );
+});
+
+function verInfoEmpleado(id){
+    ipcRenderer.send('verInfoEmpleado', {
+        width: window.innerWidth,
+        height: window.innerHeight,
+        title: 'Ver detalle de Empleado',
+        ruta: '../views/formEmpleados.html',
+        id: id,
+        update:false
+    });
+}
+
+function actualizarDatosEmpleado(id){
+    ipcRenderer.send('verInfoEmpleado', {
+        width: window.innerWidth,
+        height: window.innerHeight,
+        title: 'Actualizar información de Empleado',
+        ruta: '../views/formEmpleados.html',
+        id: id,
+        update:true
+    });
+}

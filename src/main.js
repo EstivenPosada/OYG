@@ -203,6 +203,37 @@ ipcMain.on('addEmpleado', async (e,data)=>{
     secondWindow.webContents.send("addEmpleadoSuccess", JSON.stringify(saved));
 });
 
+ipcMain.on('cambiarEstadoEmpleado', async (e,data)=>{
+    const empleado = await Empleados.findById(data.id);
+    let status='activo';
+    if(empleado.estadoEmpleado==='activo'){
+        status='inactivo';
+    }
+    const updated = await Empleados.findByIdAndUpdate(
+        empleado._id,
+        {estadoEmpleado: status},
+        {new:true}
+    );
+    mainWindow.webContents.send('cambiarEstadoEmpleadoSuccess');
+});
+
+ipcMain.on('verInfoEmpleado', async (e, data)=>{
+    const empleado = await Empleados.findById(data.id);
+    let object = {
+        width   : data.width,
+        height  : data.height,
+        title   : data.title,
+        ruta    : data.ruta,
+        update  : data.update,
+        info    : {empleado:empleado,id:data.id}
+    }
+    newWindow(object);
+});
+
+ipcMain.on('updateEmpleado', async (e,data)=>{
+    const updated = await Empleados.findByIdAndUpdate(data.id,data,{new:true});
+    secondWindow.webContents.send('updateEmpleadoSuccess');
+});
 
 
 
