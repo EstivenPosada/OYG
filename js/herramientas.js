@@ -120,6 +120,7 @@ function renderHerramientas(herramientas)
     },1000);    
 }
 
+
 function reloadTable(){
     $("#spinner").removeClass('visually-hidden')
     $(".container").addClass('visually-hidden') 
