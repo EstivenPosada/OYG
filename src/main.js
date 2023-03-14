@@ -6,6 +6,7 @@ const url = require('url');
 const fs = require('fs');
 const Admins = require('../models/Admins');
 const Empleados = require('../models/Empleados');
+const Herramientas = require('../models/Herramientas');
 
 let widthA = [640,854,800,1024,1152,1280,1360,1366,1440,1600,1680,1920];
 let heightA = [480,576,600,720,768,800,864,900];
@@ -141,6 +142,8 @@ ipcMain.on('change-window',async (e,args)=>{
 	});
 });
 
+//Empleados
+
 ipcMain.on('getEmpleados', async (e)=>{
     const listaEmpleados = await Empleados.find().sort({name:1});
     mainWindow.webContents.send('getEmpleados',JSON.stringify(listaEmpleados));
@@ -233,6 +236,102 @@ ipcMain.on('verInfoEmpleado', async (e, data)=>{
 ipcMain.on('updateEmpleado', async (e,data)=>{
     const updated = await Empleados.findByIdAndUpdate(data.id,data,{new:true});
     secondWindow.webContents.send('updateEmpleadoSuccess');
+});
+
+//Herramientas
+
+ipcMain.on('getHerramientas', async (e)=>{
+    const listaHerramientas = await Herramientas.find().sort({name:1});
+    mainWindow.webContents.send('getHerramientas',JSON.stringify(listaHerramientas));
+});
+
+function newWindow(data){
+    secondWindow = new BrowserWindow({
+        width: calcSize(data.width, widthA),
+		height: calcSize(data.height, heightA),
+		modal: true,
+		parent: mainWindow,
+		webPreferences: {
+			nodeIntegration: true,
+			contextIsolation: false,
+			enableRemoteModule: true,
+		},
+		autoHideMenuBar: true,
+		center: true,
+		roundedCorners: true
+    });
+    secondWindow.setTitle(data.title);
+    secondWindow.loadURL(url.format({
+		pathname: path.join(__dirname, data.ruta),
+		protocol: 'file',
+		slashes: true
+	}));
+    if(data.info!=null){
+        secondWindow.on("ready-to-show", ()=>{
+            if(data.update){
+                secondWindow.webContents.send('update',data.info);
+            }else{
+                secondWindow.webContents.send('preview',data.info);
+            }
+        });
+    }else{
+        secondWindow.on("ready-to-show", () => {
+            secondWindow.webContents.send('create');
+        });
+    }
+    secondWindow.on('closed', ()=>{
+        secondWindow = null;
+        mainWindow.focus();
+        mainWindow.show();
+    });
+};
+
+ipcMain.on('newWindow', (e, args) => {
+	newWindow(args);
+});
+
+ipcMain.on('close-sencond', ()=>{
+    secondWindow.destroy();
+	mainWindow.focus();
+	mainWindow.show();
+});
+
+ipcMain.on('addHerramienta', async (e,data)=>{
+    const newHerramienta = new Herramientas(data);
+    const saved = await newHerramienta.save();
+    secondWindow.webContents.send("addHerramientaSuccess", JSON.stringify(saved));
+});
+
+ipcMain.on('cambiarEstadoHerramienta', async (e,data)=>{
+    const herramienta = await Herramientas.findById(data.id);
+    let status='activo';
+    if(herramienta.estadoHerramienta==='activo'){
+        status='inactivo';
+    }
+    const updated = await Herramientas.findByIdAndUpdate(
+        herramienta._id,
+        {estadoHerramienta: status},
+        {new:true}
+    );
+    mainWindow.webContents.send('cambiarEstadoHerramientaSuccess');
+});
+
+ipcMain.on('verInfoHerramienta', async (e, data)=>{
+    const herramienta = await Herramientas.findById(data.id);
+    let object = {
+        width   : data.width,
+        height  : data.height,
+        title   : data.title,
+        ruta    : data.ruta,
+        update  : data.update,
+        info    : {herramienta:herramienta,id:data.id}
+    }
+    newWindow(object);
+});
+
+ipcMain.on('updateHerramienta', async (e,data)=>{
+    const updated = await Herramientas.findByIdAndUpdate(data.id,data,{new:true});
+    secondWindow.webContents.send('updateHerramientaSuccess');
 });
 
 
