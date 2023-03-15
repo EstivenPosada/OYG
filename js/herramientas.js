@@ -1,5 +1,3 @@
-const Swal = require('sweetalert2');
-
 setTimeout(() => {
     $("#divHerramientas").removeClass('visually-hidden');
     $("#spinner").addClass('visually-hidden');
@@ -11,7 +9,6 @@ ipcRenderer.send('getHerramientas');
 
 ipcRenderer.on('getHerramientas', (e, data) => {
     herramientas = JSON.parse(data);
-    console.log(herramientas);
     renderHerramientas(herramientas);
 });
 
@@ -152,7 +149,7 @@ function statusHerramienta(id){
         if (result.isConfirmed) {
             ipcRenderer.send('cambiarEstadoHerramienta', {id:id});
         } else if (result.isDenied) {
-            Swal.fire({title:'Acción cancelada', icon:'info', showConfirmButton:false,timer:1500})
+            Swal.close();
         };
     });    
 };

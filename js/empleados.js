@@ -1,5 +1,3 @@
-const Swal = require('sweetalert2');
-
 setTimeout(() => {
     $("#divEmpleados").removeClass('visually-hidden');
     $("#spinner").addClass('visually-hidden');
@@ -11,7 +9,6 @@ ipcRenderer.send('getEmpleados');
 
 ipcRenderer.on('getEmpleados', (e, data) => {
     empleados = JSON.parse(data);
-    console.log(empleados);
     renderEmpleados(empleados);
 });
 
@@ -150,7 +147,7 @@ function statusEmpleado(id){
         if (result.isConfirmed) {
             ipcRenderer.send('cambiarEstadoEmpleado', {id:id});
         } else if (result.isDenied) {
-            Swal.fire({title:'Acción cancelada', icon:'info', showConfirmButton:false,timer:1500})
+            Swal.close();
         };
     });    
 };

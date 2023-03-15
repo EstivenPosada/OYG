@@ -1,4 +1,5 @@
 const { ipcRenderer } = require('electron');
+const Swal = require('sweetalert2');
 
 //Declaramos variables
 var side_menu = document.getElementById("menu_side");
@@ -32,21 +33,19 @@ const itemsMenu = [
 
 function agregarMenuLateral(itemsMenu){
     menuLateral.innerHTML +=`
-
                             <header class="pt-2 font-small fixed-top" style="background: #f5f5f5;z-index: 200;height: 5rem;">
                                     
-                        </header>
+                            </header>
 
-
-                        <div id="menu_side" class="menu__side">
-    
-                            <div class="name__page">
-                                    <i class="fab fa-youtube" title="Ingenieria" ></i>
-                                    <h4> OYG INGENIERIA</h4>
-                            </div>
-                            <div class="options__menu">
-                            </div>
-                        </div>`;
+                            <div id="menu_side" class="menu__side">
+        
+                                <div class="name__page">
+                                        <i class="fab fa-youtube" title="Ingenieria" ></i>
+                                        <h4> OYG INGENIERIA</h4>
+                                </div>
+                                <div class="options__menu">
+                                </div>
+                            </div>`;
     
     var optionsMenu = document.querySelector("div[class='options__menu']");                            
     
@@ -67,9 +66,23 @@ function cambiarOpcion(ruta,title){
     if(title!=='Logout'){
         ipcRenderer.send('change-window',{title:title, ruta:ruta});
     }else{
-        if(confirm('¿Estás seguro que quieres cerrar la sesión?')){
-            ipcRenderer.send('logoutGoogle');
-        }
+        Swal.fire(
+            {
+                title: '¿Seguro que quieres cerrar sesión?',
+                icon: 'question',
+                confirmButtonText: 'Si',
+                showDenyButton: true,
+                denyButtonText: 'No',
+                confirmButtonColor: '#008000',
+            }
+        ).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                ipcRenderer.send('logoutGoogle');
+            } else if (result.isDenied) {
+                Swal.close();
+            };
+        });
     }
 };
 
