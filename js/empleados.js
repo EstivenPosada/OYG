@@ -49,7 +49,7 @@ function renderEmpleados(empleados)
     "serverSide": false,
     'bLengthChange':false,
     "lengthMenu": [[10], [10]],
-    'order':[[0, 'asc']],
+    'order':[[3, 'asc']],
     'info':false,
     data : empleados,
     columns: [

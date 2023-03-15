@@ -30,6 +30,8 @@ ipcRenderer.on('preview', (e,data)=>{
     $("#nombre").attr('disabled',true);
     $("#cantidad").val(infoHerramienta.cantidad);
     $("#cantidad").attr('disabled',true);
+    $("#cantidadDisponible").val(infoHerramienta.cantidadDisponible);
+    $("#cantidadDisponible").attr('disabled',true);
     $("#fechaIngreso").val(infoHerramienta.fechaIngreso)
     $("#fechaIngreso").attr('disabled',true);
 
@@ -74,14 +76,15 @@ form.addEventListener('submit', async (e) => {
     if ($("#id").val() !== '') {
         datosHerramienta.id = $("#id").val();
         ipcRenderer.send('updateHerramienta', datosHerramienta);
-        $("#spinner").removeClass('visually-hidden')
-        $(".container").addClass('visually-hidden')
+        $("#spinner").removeClass('visually-hidden');
+        $(".container").addClass('visually-hidden');
     }
     else {
         datosHerramienta.estadoHerramienta = 'activo';
         ipcRenderer.send('addHerramienta', datosHerramienta);
-        $("#spinner").removeClass('visually-hidden')
-        $(".container").addClass('visually-hidden')
+        $("#spinner").removeClass('visually-hidden');
+        $(".container").addClass('visually-hidden');
+        
     }
 });
 

@@ -245,61 +245,11 @@ ipcMain.on('getHerramientas', async (e)=>{
     mainWindow.webContents.send('getHerramientas',JSON.stringify(listaHerramientas));
 });
 
-function newWindow(data){
-    secondWindow = new BrowserWindow({
-        width: calcSize(data.width, widthA),
-		height: calcSize(data.height, heightA),
-		modal: true,
-		parent: mainWindow,
-		webPreferences: {
-			nodeIntegration: true,
-			contextIsolation: false,
-			enableRemoteModule: true,
-		},
-		autoHideMenuBar: true,
-		center: true,
-		roundedCorners: true
-    });
-    secondWindow.setTitle(data.title);
-    secondWindow.loadURL(url.format({
-		pathname: path.join(__dirname, data.ruta),
-		protocol: 'file',
-		slashes: true
-	}));
-    if(data.info!=null){
-        secondWindow.on("ready-to-show", ()=>{
-            if(data.update){
-                secondWindow.webContents.send('update',data.info);
-            }else{
-                secondWindow.webContents.send('preview',data.info);
-            }
-        });
-    }else{
-        secondWindow.on("ready-to-show", () => {
-            secondWindow.webContents.send('create');
-        });
-    }
-    secondWindow.on('closed', ()=>{
-        secondWindow = null;
-        mainWindow.focus();
-        mainWindow.show();
-    });
-};
-
-ipcMain.on('newWindow', (e, args) => {
-	newWindow(args);
-});
-
-ipcMain.on('close-sencond', ()=>{
-    secondWindow.destroy();
-	mainWindow.focus();
-	mainWindow.show();
-});
-
 ipcMain.on('addHerramienta', async (e,data)=>{
     const newHerramienta = new Herramientas(data);
     const saved = await newHerramienta.save();
-    secondWindow.webContents.send("addHerramientaSuccess", JSON.stringify(saved));
+    secondWindow.webContents.send("addHerramientaSuccess", JSON.stringify(saved)); 
+    
 });
 
 ipcMain.on('cambiarEstadoHerramienta', async (e,data)=>{

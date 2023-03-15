@@ -18,7 +18,7 @@ ipcRenderer.on('getHerramientas', (e, data) => {
 
 function renderHerramientas(herramientas)
 {
-    rowSelection = $('#listaHerramientas').DataTable({
+    rowSelection = $('#listaHerramienta').DataTable({
     "oLanguage":
     {
         "sProcessing":     "Procesando...",
@@ -49,7 +49,7 @@ function renderHerramientas(herramientas)
     "serverSide": false,
     'bLengthChange':false,
     "lengthMenu": [[10], [10]],
-    'order':[[0, 'asc']],
+    'order':[[3, 'asc']],
     'info':false,
     data : herramientas,
     columns: [
@@ -113,7 +113,7 @@ function renderHerramientas(herramientas)
     destroy: true,
     "responsive": true,     
     });
-    $('#listaHerramientas_filter').append("<button type='button' style='float:right' class='btn btn-warning' onclick='reloadTable()' title='Recargar Tabla'><i class='bi bi-arrow-repeat'></i></button><button type='button' style='float:right' class='btn btn-success' onclick='nuevaHerramienta()' title='Agregar Herramienta'><i class='fa-solid fa-user-plus'></i></button>");
+    $('#listaHerramienta_filter').append("<button type='button' style='float:right' class='btn btn-warning' onclick='reloadTable()' title='Recargar Tabla'><i class='bi bi-arrow-repeat'></i></button><button type='button' style='float:right' class='btn btn-success' onclick='nuevaHerramienta()' title='Agregar Herramienta'><i class='fa-sharp fa-solid fa-screwdriver-wrench'></i></button>");
     setTimeout(()=>{       
         $("#spinner").addClass('visually-hidden')
         $(".container").removeClass('visually-hidden')
@@ -127,7 +127,7 @@ function reloadTable(){
     ipcRenderer.send('getHerramientas');
 }
 
-function nuevoHerramienta(){
+function nuevaHerramienta(){
     ipcRenderer.send('newWindow', {
         width: window.innerWidth,
         height: window.innerHeight,
