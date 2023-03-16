@@ -8,7 +8,7 @@ const schema = new Schema({
     documento: { type: String, required: true },
     genero: { type: String, required: true },
     email: { type: String, required: true },
-    edad: { type: String, required: true },
+    fechaNacimiento: { type: String, required: true },
     direccion: { type: String, required: true },
     fechaIngreso: { type: String, required: true },
     salario: { type: String, required: true },

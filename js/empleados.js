@@ -101,7 +101,7 @@ function renderEmpleados(empleados)
             "targets": 5,
             data: '_id',
             render: function(data){
-                return "<div class='btn-group' role='group' aria-label='Basic example'><button type='button' class='btn btn-sm btn-outline-warning' onclick='statusEmpleado("+`"`+data+`"`+")' title='Cambiar Estado'><i class='bi bi-toggles'></i></button><button type='button' class='btn btn-sm btn-outline-success' onclick='actualizarDatosEmpleado("+`"`+data+`"`+")' title='Editar'><i class='bi bi-pencil-square'></i></button><button type='button' class='btn btn-sm btn-outline-info' onclick='verInfoEmpleado("+`"`+data+`"`+")' title='Ver Info'><i class='bi bi-eye'></i></button></div>"
+                return "<div class='btn-group' role='group' aria-label='Basic example'><button type='button' class='btn btn-sm btn-outline-warning' onclick='statusEmpleado("+`"`+data+`"`+")' title='Cambiar Estado'><i class='bi bi-toggles'></i></button><button type='button' class='btn btn-sm btn-outline-success' onclick='actualizarDatosEmpleado("+`"`+data+`"`+")' title='Editar'><i class='bi bi-pencil-square'></i></button><button type='button' class='btn btn-sm btn-outline-info' onclick='verInfoEmpleado("+`"`+data+`"`+")' title='Ver Info'><i class='bi bi-eye'></i></button><button type='button' class='btn btn-sm btn-outline-info' onclick='asignarHerramienta("+`"`+data+`"`+")' title='Asignar Herramienta'><i class='bi bi-tools'></i></button></div>"
             },
             "orderable": false
         },

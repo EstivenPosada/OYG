@@ -6,12 +6,21 @@ $("#cancel").click(() => {
     ipcRenderer.send('close-sencond');
 });
 
+$(function(){
+    //Para escribir solo letras
+    $('#nombres').validCampoFranz(' abcdefghijklmnñopqrstuvwxyzáéiou');
+    $('#apellidos').validCampoFranz(' abcdefghijklmnñopqrstuvwxyzáéiou');
+    //Para escribir solo numeros    
+   // $('#').validCampoFranz('0123456789'); 
+});
+
 function fechaDeVencimientoCA() {
     let dataFecha = new Date();
     dataFecha.setFullYear(dataFecha.getFullYear() + 2);
     return dataFecha.toISOString().split("T")[0];
 };
 $('#fechaDeVencimientoCA').prop("max", fechaDeVencimientoCA());
+//$('#fechaDeVencimientoCA').prop("min", fechaDeVencimientoCA());
 $('#fechaIngreso').prop("max", new Date().toISOString().split("T")[0]);
 
 ipcRenderer.on('create', () => {
@@ -40,8 +49,8 @@ ipcRenderer.on('preview', (e,data)=>{
     $("#genero").attr('disabled',true);
     $("#email").val(infoEmpleado.email)
     $("#email").attr('disabled',true);
-    $("#edad").val(infoEmpleado.edad)
-    $("#edad").attr('disabled',true);
+    $("#fechaNacimiento").val(infoEmpleado.fechaNacimiento)
+    $("#fechaNacimiento").attr('disabled',true);
     $("#fechaIngreso").val(infoEmpleado.fechaIngreso)
     $("#fechaIngreso").attr('disabled',true);
     $("#salario").val(infoEmpleado.salario)
@@ -71,7 +80,7 @@ ipcRenderer.on('update', (e,data)=>{
     $("#documento").val(infoEmpleado.documento);
     $("#genero").val(infoEmpleado.genero).change();
     $("#email").val(infoEmpleado.email);
-    $("#edad").val(infoEmpleado.edad);
+    $("#fechaNacimiento").val(infoEmpleado.fechaNacimiento);
     $("#fechaIngreso").val(infoEmpleado.fechaIngreso);
     $("#salario").val(infoEmpleado.salario);
     $("#fechaDeVencimientoCA").val(infoEmpleado.fechaDeVencimientoCA);
@@ -100,7 +109,7 @@ form.addEventListener('submit', async (e) => {
         genero: $('#genero').val(),
         documento: $('#documento').val(),
         email: $('#email').val(),
-        edad: $('#edad').val(),
+        fechaNacimiento: $('#fechaNacimiento').val(),
         direccion: $('#direccion').val(),
         fechaIngreso: $('#fechaIngreso').val(),
         salario: $('#salario').val(),
