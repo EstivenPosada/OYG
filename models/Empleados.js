@@ -2,21 +2,21 @@ const { model, Schema } = require("mongoose");
 
 const schema = new Schema({
     /* _id: { type: String, required: true }, */
-    nombres               : { type: String, required: true },
-    apellidos             : { type: String, required: true },
-    tipoDocumento         : { type: String, required: true },
-    documento             : { type: String, required: true },
-    genero                : { type: String, required: true },
-    email                 : { type: String, required: true },
-    fechaNacimiento       : { type: String, required: true },
-    direccion             : { type: String, required: true },
-    fechaIngreso          : { type: String, required: true },
-    salario               : { type: String, required: true },
-    fechaDeVencimientoCA  : { type: String, required: true },
-    arl                   : { type: String, required: true },
-    eps                   : { type: String, required: true },
-    estadoEmpleado        : { type: String, required: true },
-    herramientas          : { model: "Herramientas", required: true }
+    nombres               : { type: 'string', required: true },
+    apellidos             : { type: 'string', required: true },
+    estadoEmpleado        : { type: 'string', required: true },
+    tipoDocumento         : { type: 'string', required: true },
+    documento             : { type: 'string', required: true },
+    genero                : { type: 'string', required: true },
+    email                 : { type: 'string', required: true },
+    fechaNacimiento       : { type: 'string', required: true },
+    direccion             : { type: 'string', required: true },
+    fechaIngreso          : { type: 'string', required: true },
+    salario               : { type: 'string', required: true },
+    fechaDeVencimientoCA  : { type: 'string', required: true },
+    arl                   : { type: 'string', required: true },
+    eps                   : { type: 'string', required: true },
+    herramientas          : []
 });
 
 module.exports = model("Empleados", schema);
