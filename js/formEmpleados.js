@@ -14,13 +14,23 @@ $(function(){
    // $('#').validCampoFranz('0123456789'); 
 });
 
+function fechaDeNacimiento() {
+    let dataFecha = new Date();
+    dataFecha.setFullYear(dataFecha.getFullYear() - 18);
+    return dataFecha.toISOString().split("T")[0];
+};
+
+$('#fechaNacimiento').prop('max', fechaDeNacimiento());
+
 function fechaDeVencimientoCA() {
     let dataFecha = new Date();
     dataFecha.setFullYear(dataFecha.getFullYear() + 2);
-    return dataFecha.toISOString().split("T")[0];
+    let dataFecha2 = new Date();
+    return {max:dataFecha.toISOString().split("T")[0], min:dataFecha2.toISOString().split("T")[0]}
+    
 };
-$('#fechaDeVencimientoCA').prop("max", fechaDeVencimientoCA());
-//$('#fechaDeVencimientoCA').prop("min", fechaDeVencimientoCA());
+$('#fechaDeVencimientoCA').prop("max", fechaDeVencimientoCA().max);
+$('#fechaDeVencimientoCA').prop("min", fechaDeVencimientoCA().min);
 $('#fechaIngreso').prop("max", new Date().toISOString().split("T")[0]);
 
 ipcRenderer.on('create', () => {

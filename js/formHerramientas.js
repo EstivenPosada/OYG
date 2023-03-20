@@ -32,8 +32,7 @@ ipcRenderer.on('preview', (e,data)=>{
     $("#cantidad").attr('disabled',true);
     $("#cantidadDisponible").val(infoHerramienta.cantidadDisponible);
     $("#cantidadDisponible").attr('disabled',true);
-    $("#fechaIngreso").val(infoHerramienta.fechaIngreso)
-    $("#fechaIngreso").attr('disabled',true);
+    
 
     setTimeout(()=>{
         $("#spinner").addClass('visually-hidden');
@@ -49,7 +48,7 @@ ipcRenderer.on('update', (e,data)=>{
     $("#nombre").val(infoHerramienta.nombre);
     $("#cantidad").val(infoHerramienta.cantidad);
     $("#cantidadDisponible").val(infoHerramienta.cantidadDisponible);
-    $("#fechaIngreso").val(infoHerramienta.fechaIngreso);
+
 
     setTimeout(()=>{
         $("#spinner").addClass('visually-hidden');
@@ -70,7 +69,6 @@ form.addEventListener('submit', async (e) => {
         nombre: $("#nombre").val(),
         cantidad: $('#cantidad').val(),
         cantidadDisponible: $('#cantidadDisponible').val(),
-        fechaIngreso: $('#fechaIngreso').val(),
     }
 
     if ($("#id").val() !== '') {
