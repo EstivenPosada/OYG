@@ -189,3 +189,14 @@ function actualizarDatosEmpleado(id){
         update:true
     });
 }
+
+function asignarHerramienta(id){
+    ipcRenderer.send('verHerramientasAsignadas', {
+        width: window.innerWidth,
+        height: window.innerHeight,
+        title: 'Asignación de herramientas',
+        ruta: '../views/asignarHerramientas.html',
+        id:id,
+        update:false
+    });
+}

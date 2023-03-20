@@ -132,14 +132,14 @@ form.addEventListener('submit', async (e) => {
     if ($("#id").val() !== '') {
         datosEmpleado.id = $("#id").val();
         ipcRenderer.send('updateEmpleado', datosEmpleado);
-        $("#spinner").removeClass('visually-hidden')
-        $(".container").addClass('visually-hidden')
+        $("#spinner").removeClass('visually-hidden');
+        $(".container").addClass('visually-hidden');
     }
     else {
         datosEmpleado.estadoEmpleado = 'activo';
         ipcRenderer.send('addEmpleado', datosEmpleado);
-        $("#spinner").removeClass('visually-hidden')
-        $(".container").addClass('visually-hidden')
+        $("#spinner").removeClass('visually-hidden');
+        $(".container").addClass('visually-hidden');
     }
 });
 
@@ -158,6 +158,40 @@ ipcRenderer.on('addEmpleadoSuccess', (e, data) => {
             ipcRenderer.send('close-sencond');
             ipcRenderer.send('getEmpleados');
         },2000) 
+    );
+});
+
+ipcRenderer.on('addEmpleadoError',()=>{
+    Swal.fire(
+        {
+            title: 'Guardado fallido!',
+            text: 'Ya existe un empleado con este número de documento o Email!',
+            icon: 'error',
+            showConfirmButton: false
+        }
+    ).then(
+        setTimeout(()=>{
+            $("#spinner").addClass('visually-hidden');
+            $(".container").removeClass('visually-hidden');
+            Swal.close();
+        },4000) 
+    );
+});
+
+ipcRenderer.on('updateEmpleadoError',()=>{
+    Swal.fire(
+        {
+            title: 'Actualización fallida!',
+            text: 'Ya existe un empleado con este número de documento o Email!',
+            icon: 'error',
+            showConfirmButton: false
+        }
+    ).then(
+        setTimeout(()=>{
+            $("#spinner").addClass('visually-hidden');
+            $(".container").removeClass('visually-hidden');
+            Swal.close();
+        },4000) 
     );
 });
 

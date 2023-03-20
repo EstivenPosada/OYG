@@ -7,7 +7,7 @@ const fs = require('fs');
 const Admins = require('../models/Admins');
 const Empleados = require('../models/Empleados');
 const Herramientas = require('../models/Herramientas');
-
+var BreakException = {};
 let widthA = [640,854,800,1024,1152,1280,1360,1366,1440,1600,1680,1920];
 let heightA = [480,576,600,720,768,800,864,900];
 
@@ -213,9 +213,24 @@ ipcMain.on('close-sencond', ()=>{
 });
 
 ipcMain.on('addEmpleado', async (e,data)=>{
-    const newEmpleado = new Empleados(data);
-    const saved = await newEmpleado.save();
-    secondWindow.webContents.send("addEmpleadoSuccess", JSON.stringify(saved));
+    const listaEmpleados = await Empleados.find().sort({name:1});
+    let guardar = true;
+    try{
+        listaEmpleados.forEach(empleado=>{
+            if(data.documento===empleado.documento || data.email===empleado.email){
+                secondWindow.webContents.send("addEmpleadoError");
+                guardar = false;
+                throw BreakException;
+            }
+        });
+    }catch(e){
+        if(e!==BreakException) throw e;
+    }
+    if(guardar){
+        const newEmpleado = new Empleados(data);
+        const saved = await newEmpleado.save();
+        secondWindow.webContents.send("addEmpleadoSuccess", JSON.stringify(saved));
+    }
 });
 
 ipcMain.on('cambiarEstadoEmpleado', async (e,data)=>{
@@ -246,8 +261,25 @@ ipcMain.on('verInfoEmpleado', async (e, data)=>{
 });
 
 ipcMain.on('updateEmpleado', async (e,data)=>{
-    const updated = await Empleados.findByIdAndUpdate(data.id,data,{new:true});
-    secondWindow.webContents.send('updateEmpleadoSuccess');
+    const listaEmpleados = await Empleados.find().sort({name:1});
+    let update = true;
+    try{
+        listaEmpleados.forEach(empleado=>{
+            if(empleado._id.valueOf()!==data.id){
+                if(data.documento===empleado.documento || data.email===empleado.email){
+                    secondWindow.webContents.send("updateEmpleadoError");
+                    update = false;
+                    throw BreakException;
+                }
+            }
+        });
+    }catch(e){
+        if(e!==BreakException) throw e;
+    }
+    if(update){
+        const updated = await Empleados.findByIdAndUpdate(data.id,data,{new:true});
+        secondWindow.webContents.send('updateEmpleadoSuccess'); 
+    }
 });
 
 //Herramientas
@@ -294,6 +326,19 @@ ipcMain.on('verInfoHerramienta', async (e, data)=>{
 ipcMain.on('updateHerramienta', async (e,data)=>{
     const updated = await Herramientas.findByIdAndUpdate(data.id,data,{new:true});
     secondWindow.webContents.send('updateHerramientaSuccess');
+});
+
+ipcMain.on('verHerramientasAsignadas', async (e,data)=>{
+    const empleado = await Empleados.findById(data.id);
+    let object = {
+        width   : data.width,
+        height  : data.height,
+        title   : data.title,
+        ruta    : data.ruta,
+        update  : data.update,
+        info    : {empleado:empleado,id:data.id}
+    }
+    newWindow(object);
 });
 
 

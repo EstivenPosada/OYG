@@ -1,7 +1,8 @@
 const { ipcRenderer } = require("electron");
 const Swal = require('sweetalert2');
 const form = document.querySelector("#formHerramienta");
-
+let cantidad = 0;
+let cantidadDisponible = 0;
 $("#cancel").click(() => {
     ipcRenderer.send('close-sencond');
 });
@@ -13,6 +14,16 @@ $("#cancel").click(() => {
 };
 $('#fechaDeVencimientoCA').prop("max", fechaDeVencimientoCA());
 $('#fechaIngreso').prop("max", new Date().toISOString().split("T")[0]); */
+$("#cantidadDisponible").attr('disabled',true);
+
+function cambiarDisponible(input){
+    
+    if($('#id').val()==''){
+        document.getElementById("cantidadDisponible").value = input.value; 
+    }else{
+        document.getElementById("cantidadDisponible").value = cantidadDisponible + Math.floor(input.value) - cantidad; 
+    }
+};
 
 ipcRenderer.on('create', () => {
     setTimeout(() => {
@@ -30,9 +41,7 @@ ipcRenderer.on('preview', (e,data)=>{
     $("#nombre").attr('disabled',true);
     $("#cantidad").val(infoHerramienta.cantidad);
     $("#cantidad").attr('disabled',true);
-    $("#cantidadDisponible").val(infoHerramienta.cantidadDisponible);
-    $("#cantidadDisponible").attr('disabled',true);
-    
+    $("#cantidadDisponible").val(infoHerramienta.cantidadDisponible); 
 
     setTimeout(()=>{
         $("#spinner").addClass('visually-hidden');
@@ -43,6 +52,8 @@ ipcRenderer.on('preview', (e,data)=>{
 
 ipcRenderer.on('update', (e,data)=>{
     const infoHerramienta = data.herramienta._doc;
+    cantidad = Math.floor(infoHerramienta.cantidad);
+    cantidadDisponible = Math.floor(infoHerramienta.cantidadDisponible);
     $("#id").val(data.id);
 
     $("#nombre").val(infoHerramienta.nombre);
@@ -71,11 +82,22 @@ form.addEventListener('submit', async (e) => {
         cantidadDisponible: $('#cantidadDisponible').val(),
     }
 
-    if ($("#id").val() !== '') {
-        datosHerramienta.id = $("#id").val();
-        ipcRenderer.send('updateHerramienta', datosHerramienta);
-        $("#spinner").removeClass('visually-hidden');
-        $(".container").addClass('visually-hidden');
+    if ($("#id").val() !== '') {        
+        if(datosHerramienta.cantidadDisponible<0){
+            Swal.fire(
+                {
+                    title: 'Acción incorrecta',
+                    text: 'La cantidad disponible no puede ser menor que cero (0)',
+                    icon: 'error'
+                }
+            );
+        }else{
+            datosHerramienta.cantidadDisponible=(datosHerramienta.cantidadDisponible).toString();
+            datosHerramienta.id = $("#id").val();
+            ipcRenderer.send('updateHerramienta', datosHerramienta);
+            $("#spinner").removeClass('visually-hidden');
+            $(".container").addClass('visually-hidden');
+        }
     }
     else {
         datosHerramienta.estadoHerramienta = 'activo';
