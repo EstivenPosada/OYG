@@ -20,6 +20,18 @@ ipcMain.on('check-google' , async (e)=>{
         loginWindow.webContents.send('LoginSuccess');
     }
 });
+/* 
+/* function calcularEdad() {
+    var fechaNacimiento = new Date(document.getElementById("fechaNacimiento").value);
+    var fechaActual = new Date();
+    var fechaNacimiento = fechaActual.getFullYear() - fechaNacimiento.getFullYear();
+    if (fechaActual.getMonth() < fechaNacimiento.getMonth() || 
+        (fechaActual.getMonth() == fechaNacimiento.getMonth() && fechaActual.getDate() < fechaNacimiento.getDate())) {
+            fechaNacimiento--;
+    }
+    document.getElementById("fechaNacimiento").innerHTML = fechaNacimiento;
+  } */
+  
 
 ipcMain.on('logoutGoogle', async(e)=>{
     settings.unsetSync(); //Borra la data del usuario en settings
