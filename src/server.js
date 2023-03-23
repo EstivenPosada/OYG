@@ -2,6 +2,9 @@ const express = require('express');
 const app = express();
 const passport = require('passport');
 const cookieSession = require('cookie-session');
+/* const Chart = require('chart.js');
+const fs = require('fs'); */
+
 require('../src/passport');
 
 app.use(cookieSession({
@@ -47,3 +50,4 @@ app.get('/auth/callback/failure' , (req , res) => {
 app.listen(3000 , () => {
     console.log("Server Running on port 3000");
 });
+

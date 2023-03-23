@@ -16,7 +16,7 @@ const schema = new Schema({
     fechaDeVencimientoCA  : { type: 'string', required: true },
     arl                   : { type: 'string', required: true },
     eps                   : { type: 'string', required: true },
-    herramientas          : []
+   /*   herramientas          : []*/
 });
 
 module.exports = model("Empleados", schema);

@@ -1,3 +1,5 @@
+const { request } = require("express");
+
 setTimeout(() => {
     $("#divHerramientas").removeClass('visually-hidden');
     $("#spinner").addClass('visually-hidden');
@@ -57,7 +59,17 @@ function renderHerramientas(herramientas)
                 if(data !== undefined){
                     return data;
                 }else{
+
                     return '';
+                    /* const nombreUne = await User.findOne({nombre: nombre}); 
+                    if (nombreUne) {
+                        req.flash('error_msg', 'el nombre ya esta en uso.' );
+                        res.redirect('../js/formHerramientas');
+                    }else{
+                        const newUser= new User({nombre, cantidad, cantidadDisponible, estadoHerramienta });
+                        await newUser.save();
+                        res.redirect('../js/formHerramientas');
+                    } */
                 }
             },
             "orderable": false 
