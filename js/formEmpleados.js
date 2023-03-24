@@ -132,12 +132,16 @@ form.addEventListener('submit', async (e) => {
     if ($("#id").val() !== '') {
         datosEmpleado.id = $("#id").val();
         ipcRenderer.send('updateEmpleado', datosEmpleado);
+        $("#spinner").removeClass('visually-hidden')
+        $(".container").addClass('visually-hidden')
         $("#spinner").removeClass('visually-hidden');
         $(".container").addClass('visually-hidden');
     }
     else {
         datosEmpleado.estadoEmpleado = 'activo';
         ipcRenderer.send('addEmpleado', datosEmpleado);
+        $("#spinner").removeClass('visually-hidden')
+        $(".container").addClass('visually-hidden')
         $("#spinner").removeClass('visually-hidden');
         $(".container").addClass('visually-hidden');
     }

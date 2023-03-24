@@ -88,7 +88,7 @@
 					<input type="text" id="id" class="visually-hidden">
 					<div class="col-lg-4 col-sm-12">
                         <div class="mb-3">
-                            <label class="form-label" for="nombres">Nombres</label>
+                            <label class="form-label" for="nombres">Nombres*</label>
                             <input type="text" id="nombres" class="form-control" placeholder="Ingresa tu(s) nombre(s)" autofocus
                                 required minlength="3" maxlength="20">
                             <div class="invalid-feedback">Debe completar este campo</div>
@@ -96,7 +96,7 @@
                     </div>
 					<div class="col-lg-4 col-sm-12">
                         <div class="mb-3">
-                            <label class="form-label" for="apellidos">Apellidos</label>
+                            <label class="form-label" for="apellidos">Apellidos*</label>
                             <input type="text" id="apellidos" class="form-control" placeholder="Ingresa tus apellidos" minlength="5"
                                 required maxlength="25">
                             <div class="invalid-feedback">Debe completar este campo</div>
@@ -104,7 +104,7 @@
                     </div>	
                     <div class="col-lg-4 col-sm-12">
                         <div class="mb-3">
-                            <label class="form-label" for="tipoDocumento">Tipo de Documento</label>
+                            <label class="form-label" for="tipoDocumento">Tipo de Documento*</label>
                             <select name="tipoDocumentoName" id="tipoDocumento" class="form-select" required>
                                 <option value="CC" selected>Cédula de Ciudadanía</option>
                                 <option value="CE">Cédula de Extranjería</option>
@@ -118,7 +118,7 @@
 				<div class="row">
 					<div class="col-lg-4 col-sm-12">
                         <div class="mb-3">
-                            <label class="form-label" for="documento">Número de Documento</label>
+                            <label class="form-label" for="documento">Número de Documento*</label>
                             <input type="text" id="documento" class="form-control numbers"
                                 placeholder="Ingresa tu número de identidad" minlength="6" maxlength="16" required>
                             <div class="invalid-feedback">Debe completar este campo</div>
@@ -126,7 +126,7 @@
                     </div>
 					<div class="col-lg-4 col-sm-12">
                         <div class="mb-3">
-                            <label class="form-label" for="genero">Género</label>
+                            <label class="form-label" for="genero">Género*</label>
                             <select name="generoName" id="genero" class="form-select" required>
                                 <option value="hombre" selected>Hombre</option>
                                 <option value="mujer">Mujer</option>
@@ -137,7 +137,7 @@
                     </div>
                     <div class="col-lg-4 col-sm-12">
                         <div class="mb-3">
-                            <label class="form-label" for="fechaNacimiento">Fecha de Nacimiento</label>
+                            <label class="form-label" for="fechaNacimiento">Fecha de Nacimiento*</label>
 							<input type="date" id="fechaNacimiento" class="form-control" required>
                             <div class="invalid-feedback">Debe completar este campo</div>
                         </div>
@@ -146,7 +146,7 @@
 				<div class="row">
                     <div class="col-lg-4 col-sm-12">
                         <div class="mb-3">
-                            <label class="form-label" for="direccion">Dirección de residencia</label>
+                            <label class="form-label" for="direccion">Dirección de Residencia*</label>
                             <input type="text" id="direccion" class="form-control" placeholder="Ingresa una dirección" minlength="5"
                                 required maxlength="30">
                             <div class="invalid-feedback">Debe completar este campo</div>
@@ -154,14 +154,14 @@
                     </div>
                     <div class="col-lg-4 col-sm-12">
                         <div class="mb-3">
-                            <label class="form-label" for="fechaIngreso">Fecha de Ingreso</label>
+                            <label class="form-label" for="fechaIngreso">Fecha de Ingreso*</label>
                             <input type="date" id="fechaIngreso" class="form-control" required>
                             <div class="invalid-feedback">Debe completar este campo</div>
                         </div>
                     </div> 
                     <div class="col-lg-4 col-sm-12">
                         <div class="mb-3">
-                            <label class="form-label" for="salario">Salario</label>
+                            <label class="form-label" for="salario">Salario*</label>
                             <input type="text" id="salario" class="form-control numbers"
                                 placeholder="Ingresa el salario" minlength="4" maxlength="8" required>
                             <div class="invalid-feedback">Debe completar este campo</div>
@@ -171,7 +171,7 @@
                 <div class="row">
                     <div class="col-lg-4 col-sm-12">
                         <div class="mb-3">
-                            <label class="form-label" for="fechaDeVencimientoCA">Vencimiento del Curso de Altura</label>
+                            <label class="form-label" for="fechaDeVencimientoCA">Vencimiento del Curso de Altura*</label>
                            <!--   <input type="date" id="fechaDeVencimientoCA"> -->
 						   <input type="date" id="fechaDeVencimientoCA" name="fechaDeVencimientoCA" min="2022-03-16"  class="form-control" required>
 							<!-- <input type="date" id="fechaDeVencimientoCA" name="fechaDeVencimientoCA"
@@ -181,7 +181,7 @@
                     </div> 
                     <div class="col-lg-4 col-sm-12">
 						<div class="mb-3">
-						<label class="form-label" for="arl">ARL</label>
+						<label class="form-label" for="arl">ARL*</label>
                             <select name="arl" id="arl" class="form-select" required>
                                 <option value="S" selected>Sura</option>
                                 <option value="SP">Seguros Positiva</option>
@@ -194,7 +194,7 @@
                     </div>
                     <div class="col-lg-4 col-sm-12">
                         <div class="mb-3">
-                            <label class="form-label" for="eps">EPS</label>
+                            <label class="form-label" for="eps">EPS*</label>
                             <select name="eps" id="eps" class="form-select" required>
                                 <option value="S" selected>SURA</option>
                                 <option value="SA">SALUD VIDA</option>
@@ -214,7 +214,7 @@
                 <div class="row">
                     <div class="col-lg-4 col-sm-12">
                         <div class="mb-3">
-                            <label class="form-label" for="email">Email</label>
+                            <label class="form-label" for="email">Email*</label>
                             <input type="email" id="email" class="form-control" placeholder="Ingresa un Email" minlength="4"
                                 required maxlength="25">
                             <div class="invalid-feedback">Debe completar este campo</div>

@@ -16,6 +16,7 @@ $('#fechaDeVencimientoCA').prop("max", fechaDeVencimientoCA());
 $('#fechaIngreso').prop("max", new Date().toISOString().split("T")[0]); */
 $("#cantidadDisponible").attr('disabled',true);
 
+
 function cambiarDisponible(input){
     
     if($('#id').val()==''){

@@ -7,6 +7,7 @@ const fs = require('fs');
 const Admins = require('../models/Admins');
 const Empleados = require('../models/Empleados');
 const Herramientas = require('../models/Herramientas');
+
 var BreakException = {};
 let widthA = [640,854,800,1024,1152,1280,1360,1366,1440,1600,1680,1920];
 let heightA = [480,576,600,720,768,800,864,900];
@@ -213,6 +214,9 @@ ipcMain.on('close-sencond', ()=>{
 });
 
 ipcMain.on('addEmpleado', async (e,data)=>{
+    const newEmpleado = new Empleados(data);
+    const saved = await newEmpleado.save();
+    secondWindow.webContents.send("addEmpleadoSuccess", JSON.stringify(saved));
     const listaEmpleados = await Empleados.find().sort({name:1});
     let guardar = true;
     try{
@@ -261,6 +265,8 @@ ipcMain.on('verInfoEmpleado', async (e, data)=>{
 });
 
 ipcMain.on('updateEmpleado', async (e,data)=>{
+   /*  const updated = await Empleados.findByIdAndUpdate(data.id,data,{new:true});
+    secondWindow.webContents.send('updateEmpleadoSuccess'); */
     const listaEmpleados = await Empleados.find().sort({name:1});
     let update = true;
     try{
