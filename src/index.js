@@ -12,4 +12,3 @@ try {
 
 }
 app.allowRendererProcessReuse = false;
-

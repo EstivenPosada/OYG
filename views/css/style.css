@@ -174,8 +174,7 @@ a.selected{
     background-size: cover;
 }
 
-.contenedor{
-    justify-content: center;
+.myChart{
+
+    left: -300px;
 }
-
-

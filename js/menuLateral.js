@@ -47,7 +47,7 @@ function agregarMenuLateral(itemsMenu) {
                             <div id="menu_side" class="menu__side">
         
                                 <div class="name__page">
-                                        <i class="fab fa-youtube" title="Ingenieria" ></i>
+                                        <i class="fab fa-" title="Ingenieria" ></i>
                                         <h4> OYG INGENIERIA</h4>
                                 </div>
                                 <div class="options__menu">
@@ -69,10 +69,10 @@ function agregarMenuLateral(itemsMenu) {
 
 agregarMenuLateral(itemsMenu);
 
-function cambiarOpcion(ruta, title) {
-    if (title !== 'Salir') {
-        ipcRenderer.send('change-window', { title: title, ruta: ruta });
-    } else {
+function cambiarOpcion(ruta,title){
+    if(title!=='Logout'){
+        ipcRenderer.send('change-window',{title:title, ruta:ruta});
+    }else{
         Swal.fire(
             {
                 title: '¿Seguro que quieres cerrar sesión?',

@@ -205,13 +205,13 @@ ipcRenderer.on('updateEmpleadoSuccess', (e,data)=>{
             title: 'Actualización Exitosa!',
             text: 'El empleado se actualizó en el sistema correctamente!',
             icon: 'success',
-            timer: 2500,
+            timer: 3000,
             showConfirmButton: false
         }
     ).then(
         setTimeout(()=>{
             ipcRenderer.send('close-sencond');
             ipcRenderer.send('getEmpleados');
-        },2500) 
+        },3000) 
     );
 });

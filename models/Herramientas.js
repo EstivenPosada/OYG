@@ -1,5 +1,6 @@
 const { model, Schema } = require("mongoose");
 
+
 const schema = new Schema({
     //_id: { type: String, required: true },
     //[BsonElement("nombre"), BsonUnique] public string nombre { get, set },
