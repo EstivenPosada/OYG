@@ -6,6 +6,7 @@ const Chart = require('chart.js');
 const fs = require('fs');
 
 
+
 //Declaramos variables
 var side_menu = document.getElementById("menu_side");
 var btn_open = document.getElementById("btn_open");
@@ -70,7 +71,7 @@ function agregarMenuLateral(itemsMenu) {
 agregarMenuLateral(itemsMenu);
 
 function cambiarOpcion(ruta,title){
-    if(title!=='Logout'){
+    if(title!=='Salir'){
         ipcRenderer.send('change-window',{title:title, ruta:ruta});
     }else{
         Swal.fire(
@@ -96,73 +97,3 @@ function cambiarOpcion(ruta,title){
 function loader(id) {
     setTimeout(() => { $(id).addClass('selected') }, 300);
 };
-/* 
-app.get('/dashboard', (req, res) => {
-    const chartData = {
-      labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio'],
-      datasets: [
-        {
-          label: 'Herramientas',
-          data: [12, 19, 3, 5, 2, 3],
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(153, 102, 255, 0.2)',
-            'rgba(255, 159, 64, 0.2)'
-          ],
-          borderColor: [
-            'rgba(255, 99, 132, 1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)',
-            'rgba(75, 192, 192, 1)',
-            'rgba(153, 102, 255, 1)',
-            'rgba(255, 159, 64, 1)'
-          ],
-          borderWidth: 1
-        }
-      ]
-    };
-  
-    const chartOptions = {
-      scales: {
-        yAxes: [{
-          ticks: {
-            beginAtZero: true
-          }
-        }]
-      }
-    };
-  
-    const chart = new Chart('myChart', {
-      type: 'bar',
-      data: chartData,
-      options: chartOptions
-    });
-  
-    const chartHtml = chart.toBase64Image();
-    const html = `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta charset="utf-8">
-          <title>Dashboard</title>
-        </head>
-        <body>
-          <div>
-            <canvas id="myChart"></canvas>
-          </div>
-          <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-          <script>
-            const ctx = document.getElementById('myChart').getContext('2d');
-            const chart = new Chart(ctx, ${JSON.stringify(chartData)}, ${JSON.stringify(chartOptions)});
-          </script>
-        </body>
-      </html>
-    `;
-  
-    fs.writeFileSync('dashboard.html', html);
-  
-    res.sendFile('dashboard.html', { root: __dirname });
-  }); */

@@ -1,8 +1,12 @@
 const { ipcRenderer } = require("electron");
 const Swal = require('sweetalert2');
 const form = document.querySelector("#formHerramienta");
+const { app } = require('electron');
+
 let cantidad = 0;
 let cantidadDisponible = 0;
+
+
 $("#cancel").click(() => {
     ipcRenderer.send('close-sencond');
 });
@@ -40,8 +44,8 @@ ipcRenderer.on('preview', (e,data)=>{
 
     $("#nombre").val(infoHerramienta.nombre);
     $("#nombre").attr('disabled',true);
-    $("#cantidad").val(infoHerramienta.cantidad);
     $("#cantidad").attr('disabled',true);
+    $("#cantidad").val(infoHerramienta.cantidad);
     $("#cantidadDisponible").val(infoHerramienta.cantidadDisponible); 
 
     setTimeout(()=>{

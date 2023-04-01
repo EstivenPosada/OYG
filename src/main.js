@@ -349,6 +349,5 @@ ipcMain.on('verHerramientasAsignadas', async (e,data)=>{
 
 
 
-
 //agregar createWindow
 module.exports = { crearVentanaLogin }
