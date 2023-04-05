@@ -337,7 +337,16 @@ ipcMain.on('updateHerramienta', async (e,data)=>{
 
 ipcMain.on('verHerramientasAsignadas', async (e,data)=>{
     const asignacionesEncontradas = await Asignaciones.find({idEmpleado:data.id});
+    const herramientasActivas = await Herramientas.find({estadoHerramienta:'activo'});
+    let herramientas = [];
     let asignaciones = [];
+
+    if(herramientasActivas.length>0){
+        for(let i = 0; i < herramientasActivas.length; i++){
+            herramientas.push(herramientasActivas[i]._doc);
+        }
+    }
+
     if(asignacionesEncontradas.length>0){
         for(let i = 0; i < asignacionesEncontradas.length; i++){
             asignaciones.push(asignacionesEncontradas[i]._doc);
@@ -350,11 +359,21 @@ ipcMain.on('verHerramientasAsignadas', async (e,data)=>{
         title   : data.title,
         ruta    : data.ruta,
         update  : data.update,
-        info    : {asignaciones:asignaciones,empleado:{nombres: data.nombres, id: data.id}}
+        info    : JSON.stringify({
+            asignaciones:asignaciones,
+            empleado:{
+                nombres: data.nombres,
+                id: data.id
+            },
+            herramientas: herramientas
+        })
     }
     newWindow(object);
 });
 
+ipcMain.on('', async (e,data)=>{
+    
+});
 
 
 //agregar createWindow

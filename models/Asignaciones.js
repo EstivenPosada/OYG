@@ -7,6 +7,7 @@ const schema = new Schema({
     nombreEmpleado        : { type: 'string', required: true },
     idEmpleado            : { type: 'string', required: true },
     cantidadPrestada      : { type: 'string', required: true },
+    estadoAsignacion      : { type: 'string', required: true },
     /* genero             : { type: 'string', required: true },
     email                 : { type: 'string', required: true },
     fechaNacimiento       : { type: 'string', required: true },

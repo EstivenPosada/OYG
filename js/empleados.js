@@ -93,6 +93,8 @@ function renderEmpleados(empleados)
                     else{
                         return "<span class='badge bg-danger'>Inactivo</span>"
                     }
+                }else{
+                    return '';
                 }
             },
             "orderable": false
