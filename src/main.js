@@ -7,6 +7,7 @@ const fs = require('fs');
 const Admins = require('../models/Admins');
 const Empleados = require('../models/Empleados');
 const Herramientas = require('../models/Herramientas');
+const Asignaciones = require('../models/Asignaciones');
 
 var BreakException = {};
 let widthA = [640,854,800,1024,1152,1280,1360,1366,1440,1600,1680,1920];
@@ -335,14 +336,21 @@ ipcMain.on('updateHerramienta', async (e,data)=>{
 });
 
 ipcMain.on('verHerramientasAsignadas', async (e,data)=>{
-    const empleado = await Empleados.findById(data.id);
+    const asignacionesEncontradas = await Asignaciones.find({idEmpleado:data.id});
+    let asignaciones = [];
+    if(asignacionesEncontradas.length>0){
+        for(let i = 0; i < asignacionesEncontradas.length; i++){
+            asignaciones.push(asignacionesEncontradas[i]._doc);
+        }
+    }
+
     let object = {
         width   : data.width,
         height  : data.height,
         title   : data.title,
         ruta    : data.ruta,
         update  : data.update,
-        info    : {empleado:empleado,id:data.id}
+        info    : {asignaciones:asignaciones,empleado:{nombres: data.nombres, id: data.id}}
     }
     newWindow(object);
 });
