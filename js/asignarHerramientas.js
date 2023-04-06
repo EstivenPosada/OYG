@@ -102,7 +102,7 @@ function renderizarAsignaciones(asignaciones)
             data: {_id: '_id', status: 'estadoAsignacion'},
             render: function(data){
                 if(data.status !== 'activo'){
-                    return "<div class='btn-group' role='group' aria-label='Basic example'><button type='button' class='btn btn-sm btn-outline-danger' onclick='devolverHerramienta("+`"`+data._id+`"`+")' title='Devolver Herramienta'><i class='fas fa-undo-alt'></i></button></div>"
+                    return "<div class='btn-group' role='group' aria-label='Basic example'><button type='button' class='btn btn-sm btn-outline-danger' onclick='devolverHerramienta("+`"`+data._id+`"`+")' title='Devolver Herramienta'><i class='fa-solid fa-right-left'></i></button></div>"
                 }
                 else{
                     return '';
@@ -115,9 +115,8 @@ function renderizarAsignaciones(asignaciones)
     destroy: true,
     "responsive": true,     
     });
-    $('#listaAsignaciones_filter').append("<button type='button' style='float:right' class='btn btn-warning' onclick='reloadTable("+`"`+asignaciones.idEmpleado+`"`+")' title='Recargar Tabla'><i class='bi bi-arrow-repeat'></i></button>");
+    $('#listaAsignaciones_filter').append("<button type='button' style='float:right' class='btn btn-warning' onclick='reloadTable("+`"`+asignaciones.idEmpleado+`"`+")' title='Recargar Tabla'><i class='fa-solid fa-arrows-repeat'></i></button>");
     setTimeout(()=>{       
-        $("#spinner").addClass('visually-hidden')
         $(".container").removeClass('visually-hidden')
     },1000);    
 }
