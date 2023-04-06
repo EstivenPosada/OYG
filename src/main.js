@@ -360,55 +360,67 @@ ipcMain.on('cargarAsignaciones', async (e, data) => {
 });
 
 ipcMain.on('crearPrestamo', async (e, data) => {
-    const asignacionesExistentes = await Asignaciones.find({ idEmpleado: data.idEmpleado, idHerramienta: data.idHerramienta });
-    asignacionesExistentes = JSON.parse(JSON.stringify(asignacionesExistentes));
-    console.log(asignacionesExistentes);
-    let activos = false;
-    if (asignacionesExistentes.length === 0) {
-        const newAsignacion = new Asignaciones(data);
-        const saved = await newAsignacion.save();
-        const herramienta = await Herramientas.findById(data.idHerramienta);
-        const herramientaUpdate = await Herramientas.findByIdAndUpdate(
-            data.idHerramienta,
-            {
-                cantidadDisponible: (parseInt(herramienta.cantidadDisponible) - parseInt(data.cantidadAPrestar)).toString()
-            }
-        )
-        secondWindow.webContents.send("crearPrestamoSuccess", JSON.stringify(saved));
-    } else if (asignacionesExistentes.length > 0) {
-        for (let index = 0; index < asignacionesExistentes.length; index++) {
-            if (asignacionesExistentes[index].estadoAsignacion === 'activo') {
-                activos = true;
-                const updateAsignacion = await Asignaciones.findByIdAndUpdate(
-                    asignacionesExistentes[index]._id,
-                    {
-                        cantidadPrestada: (parseInt(asignacionesExistentes[index].cantidadPrestada) + parseInt(data.cantidadAPrestar)).toString()
-                    }
-                )
-                const herramienta = await Herramientas.findById(data.idHerramienta);
-                const herramientaUpdate = await Herramientas.findByIdAndUpdate(
-                    data.idHerramienta,
-                    {
-                        cantidadDisponible: (parseInt(herramienta.cantidadDisponible) - parseInt(data.cantidadAPrestar)).toString()
-                    }
-                )
-                break;
-                secondWindow.webContents.send("crearPrestamoSuccess", JSON.stringify(updateAsignacion));
-            }
-        }
-        if (!activos) {
+    const herramienta = await Herramientas.findById(data.idHerramienta);
+    if((parseInt(herramienta.cantidadDisponible)-parseInt(data.cantidadPrestada))<0){
+        secondWindow.webContents.send('crearPrestamoFailed', herramienta.cantidadDisponible);
+    }else{
+        let activos = false;
+        let asignacionesExistentes = await Asignaciones.find({ idEmpleado: data.idEmpleado, idHerramienta: data.idHerramienta });
+        asignacionesExistentes = JSON.parse(JSON.stringify(asignacionesExistentes));
+        if (asignacionesExistentes.length === 0) {
+            data.estadoAsignacion = 'activo'
             const newAsignacion = new Asignaciones(data);
             const saved = await newAsignacion.save();
-            const herramienta = await Herramientas.findById(data.idHerramienta);
             const herramientaUpdate = await Herramientas.findByIdAndUpdate(
                 data.idHerramienta,
                 {
-                    cantidadDisponible: (parseInt(herramienta.cantidadDisponible) - parseInt(data.cantidadAPrestar)).toString()
+                    cantidadDisponible: (parseInt(herramienta.cantidadDisponible) - parseInt(data.cantidadPrestada)).toString()
                 }
             )
-            secondWindow.webContents.send("crearPrestamoSuccess", JSON.stringify(saved));
+            secondWindow.webContents.send("crearPrestamoSuccess", data.idEmpleado);
+        } else {
+            for (let index = 0; index < asignacionesExistentes.length; index++) {
+                if (asignacionesExistentes[index].estadoAsignacion === 'activo') {
+                    activos = true;
+                    const updateAsignacion = await Asignaciones.findByIdAndUpdate(
+                        asignacionesExistentes[index]._id,
+                        {
+                            cantidadPrestada: (parseInt(asignacionesExistentes[index].cantidadPrestada) + parseInt(data.cantidadPrestada)).toString()
+                        }
+                    )
+                    const herramientaUpdate = await Herramientas.findByIdAndUpdate(
+                        data.idHerramienta,
+                        {
+                            cantidadDisponible: (parseInt(herramienta.cantidadDisponible) - parseInt(data.cantidadPrestada)).toString()
+                        }
+                    )
+                    secondWindow.webContents.send("crearPrestamoSuccess", data.idEmpleado);
+                    break;
+                }
+            }
+            if (!activos) {
+                data.estadoAsignacion = 'activo'
+                const newAsignacion = new Asignaciones(data);
+                const saved = await newAsignacion.save();
+                const herramientaUpdate = await Herramientas.findByIdAndUpdate(
+                    data.idHerramienta,
+                    {
+                        cantidadDisponible: (parseInt(herramienta.cantidadDisponible) - parseInt(data.cantidadPrestada)).toString()
+                    }
+                )
+                secondWindow.webContents.send("crearPrestamoSuccess", data.idEmpleado);
+            }
         }
     }
+});
+
+ipcMain.on('devolverHerramienta', async(e,data)=>{
+    const devolucion = await Asignaciones.findByIdAndUpdate(data,{estadoAsignacion: 'cerrado'});
+    const herramienta = await Herramientas.findById(devolucion.idHerramienta);
+    const herramientaUpdate = await Herramientas.findByIdAndUpdate(devolucion.idHerramienta, {
+        cantidadDisponible: (parseInt(herramienta.cantidadDisponible)+parseInt(devolucion.cantidadPrestada)).toString()
+    })
+    secondWindow.webContents.send('devolverHerramientaSuccess', devolucion.idEmpleado);
 });
 
 

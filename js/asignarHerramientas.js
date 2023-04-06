@@ -60,7 +60,7 @@ function renderizarAsignaciones(asignaciones)
     "serverSide": false,
     'bLengthChange':false,
     "lengthMenu": [[5], [5]],
-    'order':[[0, 'asc']],
+    'order':[[2, 'asc']],
     'info':false,
     data : asignaciones.lista,
     columns: [
@@ -107,10 +107,10 @@ function renderizarAsignaciones(asignaciones)
         },
         { 
             "targets": 3,
-            data: {_id: '_id', status: 'estadoAsignacion'},
-            render: function(data){
-                if(data.status !== 'activo'){
-                    return "<div class='btn-group' role='group' aria-label='Basic example'><button type='button' class='btn btn-sm btn-outline-danger' onclick='devolverHerramienta("+`"`+data._id+`"`+")' title='Devolver Herramienta'><i class='fa-solid fa-right-left'></i></button></div>"
+            data: null/* {_id: '_id', status: 'estadoAsignacion'} */,
+            render: function(row){
+                if(row.estadoAsignacion === 'activo'){
+                    return "<div class='btn-group' role='group' aria-label='Basic example'><button type='button' class='btn btn-sm btn-outline-danger' onclick='devolverHerramienta("+`"`+row._id+`"`+")' title='Devolver Herramienta'><i class='fa-solid fa-right-left'></i></button></div>"
                 }
                 else{
                     return '';
@@ -128,6 +128,42 @@ function renderizarAsignaciones(asignaciones)
         $(".container").removeClass('visually-hidden')
     },1000);    
 }
+
+function devolverHerramienta(id){
+    Swal.fire(
+        {
+            title: '¿Quieres devolver la(s) herramienta(s) prestada(s)?',
+            icon: 'question',
+            confirmButtonText: 'Si',
+            showDenyButton: true,
+            denyButtonText: "No",
+            confirmButtonColor: '#008000',
+        }
+    ).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+            ipcRenderer.send('devolverHerramienta', id);
+        } else if (result.isDenied) {
+            Swal.close();
+        };
+    });
+}
+
+ipcRenderer.on('devolverHerramientaSuccess', (e,data)=>{
+    Swal.fire(
+        {
+            title: 'Acción Exitosa!',
+            text: 'Logramos hacer la devolución del préstamo',
+            icon: 'success',
+            showConfirmButton: false
+        }
+    ).then(
+        setTimeout(()=>{
+            Swal.close();
+            reloadTable(data);
+        },3000) 
+    );
+});
 
 $('#addPrestamo').click(()=>{
     if($('#herramienta').val()==='x'){
@@ -178,7 +214,8 @@ $('#addPrestamo').click(()=>{
     }else{
         let obj = {
             idHerramienta: $('#herramienta').val(),
-            cantidadAPrestar: $('#cantidadAPrestar').val(),
+            nombreHerramienta: $('#herramienta option:selected').text(),
+            cantidadPrestada: $('#cantidadAPrestar').val(),
             idEmpleado: $('#idEmpleado').val(),
             nombreEmpleado: $('#nombreEmpleado').val()
         };
@@ -186,9 +223,42 @@ $('#addPrestamo').click(()=>{
     }
 });
 
-ipcRenderer.on('crearPrestamoSuccess', (e, data)=>{
-    data = JSON.parse(data);
-    console.log(data);
+ipcRenderer.on('crearPrestamoSuccess', (e,data)=>{
+    Swal.fire(
+        {
+            title: 'Acción Exitosa!',
+            text: 'Logramos hacer el préstamo exitosamente',
+            icon: 'success',
+            showConfirmButton: false
+        }
+    ).then(
+        setTimeout(()=>{
+            Swal.close();
+            $('#herramienta').val('x').change();
+            $('#cantidadAPrestar').val('');
+            reloadTable(data);
+        },3000) 
+    );
+});
+
+ipcRenderer.on('crearPrestamoFailed', (e,data) =>{
+    Swal.fire(
+        {
+            title: 'Acción Fallida!',
+            text: `No hay suficientes herramientas disponibles. Cantidad disponible actual: ${data}`,
+            icon: 'error',
+            showConfirmButton: false
+        }
+    ).then(
+        setTimeout(()=>{
+            Swal.close();
+        },4500) 
+    );
+});
+
+$('#cleanAsignacion').click(()=>{
+    $('#herramienta').val('x').change();
+    $('#cantidadAPrestar').val('');
 });
 
 function reloadTable(_id){
