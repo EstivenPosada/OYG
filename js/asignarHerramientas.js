@@ -1,17 +1,25 @@
 const { ipcRenderer } = require("electron");
+const Swal = require('sweetalert2');
 
 ipcRenderer.on('preview', (e,data)=>{
     data = JSON.parse(data);
+    $('#idEmpleado').val(data.empleado.id);
+    $('#nombreEmpleado').val(data.empleado.nombres);
+    ipcRenderer.send('cargarAsignaciones', data.empleado.id);
     $('#title').text(`Herramientas asignadas a ${data.empleado.nombres}`);
+    
     
     data.herramientas.forEach((element)=>{
         $('#herramienta').append($('<option>', {
-            value: element._id,
+            value: element.id,
             text: element.nombre
         }));
     });
-    renderizarAsignaciones({lista:data.asignaciones, idEmpleado:data.empleado.id});
-    console.log(data);
+});
+
+ipcRenderer.on('renderAsignaciones', (e,data) =>{
+    data = JSON.parse(data);
+    renderizarAsignaciones({lista:data.asignaciones, idEmpleado:data.idEmpleado});
     setTimeout(()=>{
         $('#spinner').addClass('visually-hidden');
         $('.container').removeClass('visually-hidden');
@@ -121,8 +129,70 @@ function renderizarAsignaciones(asignaciones)
     },1000);    
 }
 
+$('#addPrestamo').click(()=>{
+    if($('#herramienta').val()==='x'){
+        Swal.fire(
+            {
+                title: 'Acción Fallida!',
+                text: 'No se ha seleccionado una herramienta',
+                icon: 'error',
+                showConfirmButton: false
+            }
+        ).then(
+            setTimeout(()=>{
+                $("#spinner").addClass('visually-hidden');
+                $(".container").removeClass('visually-hidden');
+                Swal.close();
+            },3000) 
+        );
+    }else if($('#cantidadAPrestar').val()===''){
+        Swal.fire(
+            {
+                title: 'Acción Fallida!',
+                text: 'No se ha ingresado la cantidad que se va a prestar',
+                icon: 'error',
+                showConfirmButton: false
+            }
+        ).then(
+            setTimeout(()=>{
+                $("#spinner").addClass('visually-hidden');
+                $(".container").removeClass('visually-hidden');
+                Swal.close();
+            },3000) 
+        );
+    }else if(parseInt($('#cantidadAPrestar').val())<1){
+        Swal.fire(
+            {
+                title: 'Acción Fallida!',
+                text: 'La cantidad a prestar de la herramienta no puede ser menor que 1',
+                icon: 'error',
+                showConfirmButton: false
+            }
+        ).then(
+            setTimeout(()=>{
+                $("#spinner").addClass('visually-hidden');
+                $(".container").removeClass('visually-hidden');
+                Swal.close();
+            },3000) 
+        );
+    }else{
+        let obj = {
+            idHerramienta: $('#herramienta').val(),
+            cantidadAPrestar: $('#cantidadAPrestar').val(),
+            idEmpleado: $('#idEmpleado').val(),
+            nombreEmpleado: $('#nombreEmpleado').val()
+        };
+        ipcRenderer.send('crearPrestamo',obj);
+    }
+});
+
+ipcRenderer.on('crearPrestamoSuccess', (e, data)=>{
+    data = JSON.parse(data);
+    console.log(data);
+});
+
 function reloadTable(_id){
     $("#spinner").removeClass('visually-hidden')
     $(".container").addClass('visually-hidden') 
-    ipcRenderer.send('recargarAsignadas', _id);
+    ipcRenderer.send('cargarAsignaciones', _id);
 }
