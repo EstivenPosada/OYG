@@ -19,7 +19,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.1/Chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     
-    
 </head>
 
 
@@ -37,15 +36,15 @@
             por un servicio íntegro y de calidad</p></main></center>
         </div>
 <br><br>
-
-<div id="donut-chart" ></div>
-
+<canvas id="myChart"></canvas>
+      <!-- <script src="app.js"></script> -->
+     
 <script>
   var chart = bb.generate({
     data: {
       columns: [
-        ['activo', 3], // Agrega los datos de empleados activos
-        ['inactivo', 1], // Agrega los datos de empleados inactivos
+      ['Activo', 5], // Actualiza los datos de empleados activos
+      ['Inactivo', 5], // Actualiza los datos de empleados inactivos
       ],
       type: 'donut',
       onclick: function (d, i) {
@@ -63,25 +62,14 @@
     // Aquí puedes actualizar los datos de la gráfica, por ejemplo:
     chart.load({
       columns: [
-        ['activo', 1], // Actualiza los datos de empleados activos
-        ['inactivo', 3], // Actualiza los datos de empleados inactivos
+        ['Activo', 5], // Actualiza los datos de empleados activos
+        ['Inactivo', 5], // Actualiza los datos de empleados inactivos
       ],
     });
   }
 </script>
         <script src="../js/menuLateral.js"></script>
+        <canvas id="Chart.js"></canvas>
+        <!-- <button onclick="updateChart()">Actualizar gráfica</button> -->
 </body>
 </html>
-
-
-
-
-  
-    
-   
-    
-   
-
-
-
-

@@ -1,4 +1,4 @@
-const { BrowserWindow, shell } = require("electron");
+const { BrowserWindow, shell, app } = require("electron");
 const { ipcMain } = require("electron");
 const settings = require('electron-settings');
 const path = require('path');
@@ -33,6 +33,9 @@ ipcMain.on('check-google', async (e) => {
     }
     document.getElementById("fechaNacimiento").innerHTML = fechaNacimiento;
   } */
+
+
+
 
 
 ipcMain.on('logoutGoogle', async (e) => {
@@ -108,6 +111,7 @@ ipcMain.on('validate-google', async (e, args) => {
         loginWindow.destroy();
     }
 });
+
 
 function createWindow(args, userAccount) {
     mainWindow = new BrowserWindow({
@@ -422,6 +426,7 @@ ipcMain.on('devolverHerramienta', async(e,data)=>{
     })
     secondWindow.webContents.send('devolverHerramientaSuccess', devolucion.idEmpleado);
 });
+
 
 
 //agregar createWindow
