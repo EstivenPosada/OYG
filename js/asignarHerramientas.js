@@ -59,7 +59,7 @@ function renderizarAsignaciones(asignaciones)
     "processing": false,
     "serverSide": false,
     'bLengthChange':false,
-    "lengthMenu": [[10], [10]],
+    "lengthMenu": [[5], [5]],
     'order':[[2, 'asc']],
     'info':false,
     data : asignaciones.lista,
