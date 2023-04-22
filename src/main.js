@@ -268,6 +268,20 @@ ipcMain.on('verInfoEmpleado', async (e, data) => {
     newWindow(object);
 });
 
+ipcMain.on('getEmpleadosActivos', async(e)=>{
+    let empleados = await Empleados.find();
+    let activos = 0;
+    let inactivos = 0;
+    empleados.forEach(element =>{
+        if(element.estadoEmpleado==='activo'){
+            activos += 1;
+        }else{
+            inactivos +=1;
+        }
+    });
+    mainWindow.webContents.send('getEmpleadosActivosResponse',{activos:activos,inactivos:inactivos});
+});
+
 ipcMain.on('updateEmpleado', async (e, data) => {
     /*  const updated = await Empleados.findByIdAndUpdate(data.id,data,{new:true});
      secondWindow.webContents.send('updateEmpleadoSuccess'); */
