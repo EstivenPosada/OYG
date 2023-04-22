@@ -112,7 +112,7 @@ function renderHerramientas(herramientas)
         },
         { 
             "targets": 4,
-            data: '_id',
+            data: 'id',
             render: function(data){
                 return "<div class='btn-group' role='group' aria-label='Basic example'><button type='button' class='btn btn-sm btn-outline-warning' onclick='statusHerramienta("+`"`+data+`"`+")' title='Cambiar Estado'><i class='bi bi-toggles'></i></button><button type='button' class='btn btn-sm btn-outline-success' onclick='actualizarDatosHerramienta("+`"`+data+`"`+")' title='Editar'><i class='bi bi-pencil-square'></i></button><button type='button' class='btn btn-sm btn-outline-info' onclick='verInfoHerramienta("+`"`+data+`"`+")' title='Ver Info'><i class='bi bi-eye'></i></button></div>"
             },
@@ -138,8 +138,8 @@ function reloadTable(){
 
 function nuevaHerramienta(){
     ipcRenderer.send('newWindow', {
-        width: window.innerWidth,
-        height: window.innerHeight,
+        width: 700,
+        height: 700,
         title: 'Agregar Herramienta',
         ruta: '../views/formHerramientas.html',
         info: null,
@@ -195,8 +195,8 @@ function verInfoHerramienta(id){
 
 function actualizarDatosHerramienta(id){
     ipcRenderer.send('verInfoHerramienta', {
-        width: window.innerWidth,
-        height: window.innerHeight,
+        width: 700,
+        height: 700,
         title: 'Actualizar información de la Herramienta',
         ruta: '../views/formHerramientas.html',
         id: id,

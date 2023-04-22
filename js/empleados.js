@@ -101,9 +101,9 @@ function renderEmpleados(empleados)
         },
         { 
             "targets": 5,
-            data: {_id: '_id', nombres: 'nombres'},
+            data: {_id: '_id', nombres: 'nombres', apellidos: 'apellidos'},
             render: function(data){
-                return "<div class='btn-group' role='group' aria-label='Basic example'><button type='button' class='btn btn-sm btn-outline-warning' onclick='statusEmpleado("+`"`+data._id+`"`+")' title='Cambiar Estado'><i class='bi bi-toggles'></i></button><button type='button' class='btn btn-sm btn-outline-success' onclick='actualizarDatosEmpleado("+`"`+data._id+`"`+")' title='Editar'><i class='bi bi-pencil-square'></i></button><button type='button' class='btn btn-sm btn-outline-info' onclick='verInfoEmpleado("+`"`+data._id+`"`+")' title='Ver Info'><i class='bi bi-eye'></i></button><button type='button' class='btn btn-sm btn-outline-primary' onclick='asignarHerramienta("+`"`+data._id+`"`+","+`"`+data.nombres+`"`+")' title='Asignar Herramienta'><i class='bi bi-tools'></i></button></div>"
+                return "<div class='btn-group' role='group' aria-label='Basic example'><button type='button' class='btn btn-sm btn-outline-warning' onclick='statusEmpleado("+`"`+data._id+`"`+")' title='Cambiar Estado'><i class='bi bi-toggles'></i></button><button type='button' class='btn btn-sm btn-outline-success' onclick='actualizarDatosEmpleado("+`"`+data._id+`"`+")' title='Editar'><i class='bi bi-pencil-square'></i></button><button type='button' class='btn btn-sm btn-outline-info' onclick='verInfoEmpleado("+`"`+data._id+`"`+")' title='Ver Info'><i class='bi bi-eye'></i></button><button type='button' class='btn btn-sm btn-outline-primary' onclick='asignarHerramienta("+`"`+data._id+`"`+","+`"`+data.nombres+`"`+","+`"`+data.apellidos+`"`+")' title='Asignar Herramienta'><i class='bi bi-tools'></i></button></div>"
             },
             "orderable": false
         },
@@ -192,7 +192,7 @@ function actualizarDatosEmpleado(id){
     });
 }
 
-function asignarHerramienta(id,nombres){
+function asignarHerramienta(id,nombres,apellidos){
     ipcRenderer.send('verHerramientasAsignadas', {
         width: window.innerWidth,
         height: window.innerHeight,
@@ -200,6 +200,7 @@ function asignarHerramienta(id,nombres){
         ruta: '../views/asignarHerramientas.html',
         id:id,
         nombres:nombres,
+        apellidos:apellidos,
         update:false
     });
 }

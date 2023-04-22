@@ -300,10 +300,15 @@ ipcMain.on('getHerramientas', async (e) => {
 });
 
 ipcMain.on('addHerramienta', async (e, data) => {
-    const newHerramienta = new Herramientas(data);
-    const saved = await newHerramienta.save();
-    secondWindow.webContents.send("addHerramientaSuccess", JSON.stringify(saved));
-
+    const mismaHerramienta = await Herramientas.findOne({nombre:data.nombre});
+    if(mismaHerramienta !== null){
+        secondWindow.webContents.send('errorMessage', 'Ya existe una herramienta con este nombre.');
+    }
+    else{
+        const newHerramienta = new Herramientas(data);
+        const saved = await newHerramienta.save();
+        secondWindow.webContents.send("addHerramientaSuccess", JSON.stringify(saved));
+    }
 });
 
 ipcMain.on('cambiarEstadoHerramienta', async (e, data) => {
@@ -322,13 +327,14 @@ ipcMain.on('cambiarEstadoHerramienta', async (e, data) => {
 
 ipcMain.on('verInfoHerramienta', async (e, data) => {
     const herramienta = await Herramientas.findById(data.id);
+    const prestamosExistentes = await Asignaciones.find({idHerramienta:data.id});
     let object = {
         width: data.width,
         height: data.height,
         title: data.title,
         ruta: data.ruta,
         update: data.update,
-        info: { herramienta: herramienta, id: data.id }
+        info: { herramienta: herramienta, id: data.id , prestamos: JSON.stringify(prestamosExistentes)}
     }
     newWindow(object);
 });
@@ -350,6 +356,7 @@ ipcMain.on('verHerramientasAsignadas', async (e, data) => {
         info: JSON.stringify({
             empleado: {
                 nombres: data.nombres,
+                apellidos:data.apellidos,
                 id: data.id
             },
             herramientas: herramientasActivas
@@ -419,10 +426,17 @@ ipcMain.on('crearPrestamo', async (e, data) => {
 });
 
 ipcMain.on('devolverHerramienta', async(e,data)=>{
-    const devolucion = await Asignaciones.findByIdAndUpdate(data,{estadoAsignacion: 'cerrado'});
-    const herramienta = await Herramientas.findById(devolucion.idHerramienta);
-    const herramientaUpdate = await Herramientas.findByIdAndUpdate(devolucion.idHerramienta, {
-        cantidadDisponible: (parseInt(herramienta.cantidadDisponible)+parseInt(devolucion.cantidadPrestada)).toString()
+    let asignacion = await Asignaciones.findById(data.id);
+    asignacion = JSON.parse(JSON.stringify(asignacion));
+    let nuevoValorCantidadPrestada = (parseInt(asignacion.cantidadPrestada) - parseInt(data.cantidadADevolver)).toString();
+    if(nuevoValorCantidadPrestada==='0'){
+        await Asignaciones.findByIdAndUpdate(asignacion._id,{estadoAsignacion:'cerrado'});
+    }else{
+        await Asignaciones.findByIdAndUpdate(asignacion._id,{cantidadPrestada: nuevoValorCantidadPrestada});
+    }
+    const herramienta = await Herramientas.findById(asignacion.idHerramienta);
+    await Herramientas.findByIdAndUpdate(asignacion.idHerramienta, {
+        cantidadDisponible: (parseInt(herramienta.cantidadDisponible)+parseInt(data.cantidadADevolver)).toString()
     })
     secondWindow.webContents.send('devolverHerramientaSuccess', devolucion.idEmpleado);
 });
