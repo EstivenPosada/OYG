@@ -438,7 +438,7 @@ ipcMain.on('devolverHerramienta', async(e,data)=>{
     await Herramientas.findByIdAndUpdate(asignacion.idHerramienta, {
         cantidadDisponible: (parseInt(herramienta.cantidadDisponible)+parseInt(data.cantidadADevolver)).toString()
     })
-    secondWindow.webContents.send('devolverHerramientaSuccess', devolucion.idEmpleado);
+    secondWindow.webContents.send('devolverHerramientaSuccess', asignacion.idEmpleado);
 });
 
 
