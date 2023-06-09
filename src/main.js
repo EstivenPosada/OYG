@@ -1,4 +1,4 @@
-const { BrowserWindow, shell, app } = require("electron");
+const { BrowserWindow, shell } = require("electron");
 const { ipcMain } = require("electron");
 const settings = require('electron-settings');
 const path = require('path');
@@ -97,7 +97,6 @@ ipcMain.on('validate-google', async (e, args) => {
         loginWindow.destroy();
     }
 });
-
 
 function createWindow(args, userAccount) {
     mainWindow = new BrowserWindow({
