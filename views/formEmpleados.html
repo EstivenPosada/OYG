@@ -129,15 +129,15 @@
 						<label class="form-label is-required" for="nombres">Nombres</label>
 						<input type="text" id="nombres" class="form-control" placeholder="Ingresa tu(s) nombre(s)"
 							autofocus required minlength="3" maxlength="20">
-						<div class="invalid-feedback">Debe completar este campo</div>
+						<div class="invalid-feedback">Debe Completar Este Campo</div>
 					</div>
 				</div>
 				<div class="col-lg-4 col-sm-12">
 					<div class="mb-3">
 						<label class="form-label is-required" for="apellidos">Apellidos</label>
 						<input type="text" id="apellidos" class="form-control" placeholder="Ingresa tus apellidos"
-							minlength="4" required maxlength="25">
-						<div class="invalid-feedback">Debe completar este campo</div>
+							minlength="3" required maxlength="25">
+						<div class="invalid-feedback">Debe Completar Este Campo</div>
 					</div>
 				</div>
 				<div class="col-lg-4 col-sm-12">
@@ -149,7 +149,7 @@
 							<option value="PEP">Permiso Especial de Permanencia</option>
 							<option value="PPT">Permiso de Protección Temporal</option>
 						</select>
-						<div class="invalid-feedback">Debe seleccionar una opción</div>
+						<div class="invalid-feedback">Debe Seleccionar Una Opción</div>
 					</div>
 				</div>
 			</div>
@@ -159,9 +159,12 @@
 						<label class="form-label is-required" for="documento">Número de Documento</label>
 						<input type="text" id="documento" class="form-control numbers"
 							placeholder="Ingresa tu número de identidad" minlength="6" maxlength="16" required>
-						<div class="invalid-feedback">Debe completar este campo</div>
+						<div class="invalid-feedback">Debe Completar Este Campo</div>
 					</div>
 				</div>
+
+				
+				
 				<div class="col-lg-4 col-sm-12">
 					<div class="mb-3">
 						<label class="form-label is-required" for="genero">Género</label>
@@ -170,39 +173,94 @@
 							<option value="mujer">Mujer</option>
 							<option value="Indefinido">Indefinido</option>
 						</select>
-						<div class="invalid-feedback">Debe seleccionar una opción</div>
+						<div class="invalid-feedback">Debe Seleccionar Una Opción</div>
 					</div>
 				</div>
 				<div class="col-lg-4 col-sm-12">
 					<div class="mb-3">
-						<label class="form-label is-required" for="fechaNacimiento">Fecha de Nacimiento</label>
-						<input type="date" id="fechaNacimiento" class="form-control" required>
-						<div class="invalid-feedback">Debe completar este campo</div>
+					  <label class="form-label is-required" for="fechaNacimiento">Fecha de Nacimiento</label>
+					  <input type="date" id="fechaNacimiento" class="form-control" required>
+					  <div id="fechaNacimiento-error" class="invalid-feedback">La fecha de nacimiento no es válida</div>
 					</div>
-				</div>
-			</div>
+				  </div>
+				  
+				  <script>
+					const fechaNacimientoInput = document.getElementById('fechaNacimiento');
+					fechaNacimientoInput.addEventListener('input', validarFechaNacimiento);
+				  
+					function validarFechaNacimiento() {
+					  const fechaNacimiento = new Date(fechaNacimientoInput.value);
+					  const hoy = new Date();
+				  
+					  if (isNaN(fechaNacimiento) || fechaNacimiento >= hoy) {
+						mostrarError();
+					  } else {
+						ocultarError();
+					  }
+					}
+				  
+					function mostrarError() {
+					  fechaNacimientoInput.classList.add('is-invalid');
+					  document.getElementById('fechaNacimiento-error').style.display = 'block';
+					}
+				  
+					function ocultarError() {
+					  fechaNacimientoInput.classList.remove('is-invalid');
+					  document.getElementById('fechaNacimiento-error').style.display = 'none';
+					}
+				  </script>
+			
 			<div class="row">
 				<div class="col-lg-4 col-sm-12">
 					<div class="mb-3">
 						<label class="form-label is-required" for="direccion">Dirección de Residencia</label>
 						<input type="text" id="direccion" class="form-control" placeholder="Ingresa una dirección"
 							minlength="5" required maxlength="30">
-						<div class="invalid-feedback">Debe completar este campo</div>
+						<div class="invalid-feedback">Debe Completar Este Campo</div>
 					</div>
 				</div>
 				<div class="col-lg-4 col-sm-12">
 					<div class="mb-3">
-						<label class="form-label is-required" for="fechaIngreso">Fecha de Ingreso</label>
-						<input type="date" id="fechaIngreso" class="form-control" required>
-						<div class="invalid-feedback">Debe completar este campo</div>
+					  <label class="form-label is-required" for="fechaIngreso">Fecha de Ingreso</label>
+					  <input type="date" id="fechaIngreso" class="form-control" required>
+					  <div id="fechaIngreso-error" class="invalid-feedback">La fecha de ingreso no es válida</div>
 					</div>
-				</div>
+				  </div>
+
+				  <script>
+					const fechaIngresoInput = document.getElementById('fechaIngreso');
+					fechaIngresoInput.addEventListener('input', validarFechaIngreso);
+				  
+					function validarFechaIngreso() {
+					  const fechaIngreso = new Date(fechaIngresoInput.value);
+					  const hoy = new Date();
+				  
+					  if (isNaN(fechaIngreso) || fechaIngreso > hoy) {
+						mostrarError(fechaIngresoInput, 'fechaIngreso-error');
+					  } else {
+						ocultarError(fechaIngresoInput, 'fechaIngreso-error');
+					  }
+					}
+				  
+					function mostrarError(input, errorId) {
+					  input.classList.add('is-invalid');
+					  document.getElementById(errorId).style.display = 'block';
+					}
+				  
+					function ocultarError(input, errorId) {
+					  input.classList.remove('is-invalid');
+					  document.getElementById(errorId).style.display = 'none';
+					}
+				  </script>
+
+				  
+
 				<div class="col-lg-4 col-sm-12">
 					<div class="mb-3">
 						<label class="form-label is-required" for="salario">Salario</label>
 						<input type="text" id="salario" class="form-control numbers" placeholder="Ingresa el salario"
 							minlength="4" maxlength="8" required>
-						<div class="invalid-feedback">Debe completar este campo</div>
+						<div class="invalid-feedback">Debe Completar Este Campo</div>
 					</div>
 				</div>
 			</div>
@@ -210,14 +268,25 @@
 				<div class="col-lg-4 col-sm-12">
 					<div class="mb-3">
 						<label class="form-label is-required" for="fechaDeVencimientoCA">Vencimiento del Curso de Altura</label>
-						<!--   <input type="date" id="fechaDeVencimientoCA"> -->
 						<input type="date" id="fechaDeVencimientoCA" name="fechaDeVencimientoCA" min="2022-03-16"
 							class="form-control" required>
-						<!-- <input type="date" id="fechaDeVencimientoCA" name="fechaDeVencimientoCA"
-       								value="2022-01-01" min="2023-01-01" max="2025-12-31" class="form-control" required> -->
-						<div class="invalid-feedback">Debes poner una fecha correcta</div>
+						<div class="invalid-feedback">Debe Poner Una Fecha Correcta</div>
 					</div>
 				</div>
+				<script>
+					const fechaDeVencimientoCAInput = document.getElementById('fechaDeVencimientoCA');
+					const invalidFeedback = fechaDeVencimientoCAInput.nextElementSibling;
+				  
+					fechaDeVencimientoCAInput.addEventListener('input', function() {
+					  if (fechaDeVencimientoCAInput.validity.valid) {
+						fechaDeVencimientoCAInput.classList.remove('is-invalid');
+						invalidFeedback.style.display = 'none';
+					  } else {
+						fechaDeVencimientoCAInput.classList.add('is-invalid');
+						invalidFeedback.style.display = 'block';
+					  }
+					});
+				  </script>
 				<div class="col-lg-4 col-sm-12">
 					<div class="mb-3">
 						<label class="form-label is-required" for="arl">ARL</label>
@@ -228,7 +297,7 @@
 							<option value="AC">ARL Colmena</option>
 							<option value="SB">Seguros Bolívar</option>
 						</select>
-						<div class="invalid-feedback">Debe seleccionar una opción</div>
+						<div class="invalid-feedback">Debe Seleccionar Una Opción</div>
 					</div>
 				</div>
 				<div class="col-lg-4 col-sm-12">
@@ -246,7 +315,7 @@
 							<option value="SOS">SERVICIO OCCIDENTAL DE SALUD</option>
 							<option value="SAN">SANITAS</option>
 						</select>
-						<div class="invalid-feedback">Debe seleccionar una opción</div>
+						<div class="invalid-feedback">Debe Seleccionar Una Opción</div>
 					</div>
 				</div>
 			</div>
@@ -256,7 +325,7 @@
 						<label class="form-label is-required" for="email">Email</label>
 						<input type="email" id="email" class="form-control" placeholder="Ingresa un Email" minlength="4"
 							required maxlength="25">
-						<div class="invalid-feedback">Debe completar este campo</div>
+						<div class="invalid-feedback">Debe Completar Este Campo</div>
 					</div>
 				</div>
 			</div>
@@ -314,5 +383,9 @@
 	});
 
 </script>
+
+
+
+<script type="text/javascript" src="../js/formEmpleados.js"></script>
 
 </html>

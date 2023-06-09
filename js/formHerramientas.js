@@ -44,9 +44,10 @@ ipcRenderer.on('preview', (e,data)=>{
 
     $("#nombre").val(infoHerramienta.nombre);
     $("#nombre").attr('disabled',true);
-    $("#cantidad").attr('disabled',true);
     $("#cantidad").val(infoHerramienta.cantidad);
-    $("#cantidadDisponible").val(infoHerramienta.cantidadDisponible); 
+    $("#cantidad").attr('disabled',true);
+    $("#cantidadDisponible").val(infoHerramienta.cantidadDisponible);
+    $("#cantidadDisponible").attr('disabled',true);
 
     const prestamos = JSON.parse(data.prestamos);
     renderPrestamos(prestamos);

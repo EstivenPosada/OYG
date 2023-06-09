@@ -105,7 +105,7 @@
 		.is-required:after {
 			content: '*';
 			margin-left: 3px;
-			color: rgb(18, 17, 17);
+			color: rgb(232, 17, 17);
 			font-weight: bold;
 		}
 	</style>
@@ -152,7 +152,7 @@
 						<div class="invalid-feedback">Debe completar este campo</div>
 					</div>
 				</div>
-                <div class="col-sm-2 buttonAceptar">
+				<div class="col-sm-2 buttonAceptar">
                     <button type="button" class="btn btn-success" id="addPrestamo" title="Agregar/Actualizar préstamo">
                         <i class="bi bi-plus"></i>
                     </button>
@@ -160,6 +160,15 @@
                         <i class="bi bi-x-circle"></i>
                     </button>
                 </div>
+				<div class="col-lg-10 col-sm-12 visually-hidden" id="divEstadoADevolver">
+					<div class="mb-5">
+						<label class="form-label is-required" for="EstadoADevolver">Estado A Devolver</label>
+						<select id="estadoHerramienta" class="form-control">
+							<option value="bueno">Bueno</option>
+							<option value="malo">Malo</option>
+						</select>
+						<div class="invalid-feedback">Debe seleccionar una opción</div>
+					</div>
 			</div>
 		</form>
 		<h4 id="title2"></h4>
@@ -171,6 +180,9 @@
                         <th scope="col"><div align="center">Cantidad Prestada</div></th>
                         <th scope="col"><div align="center">Estado</div></th>
                         <th scope="col"><div align="center">Acciones</div></th>
+						<th scope="col"><div align="center">Fecha Prestamo</div></th>
+						<th scope="col"><div align="center">Fecha Devolución</div></th>
+						<th scope="col"><div align="center">Estado De Devolución</div></th>
                     </tr>
                 </thead>
                 <tbody></tbody>

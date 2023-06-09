@@ -4,6 +4,7 @@ const settings = require('electron-settings');
 const path = require('path');
 const url = require('url');
 const fs = require('fs');
+const moment = require('moment');
 const Admins = require('../models/Admins');
 const Empleados = require('../models/Empleados');
 const Herramientas = require('../models/Herramientas');
@@ -22,21 +23,6 @@ ipcMain.on('check-google', async (e) => {
         loginWindow.webContents.send('LoginSuccess');
     }
 });
-/* 
-/* function calcularEdad() {
-    var fechaNacimiento = new Date(document.getElementById("fechaNacimiento").value);
-    var fechaActual = new Date();
-    var fechaNacimiento = fechaActual.getFullYear() - fechaNacimiento.getFullYear();
-    if (fechaActual.getMonth() < fechaNacimiento.getMonth() || 
-        (fechaActual.getMonth() == fechaNacimiento.getMonth() && fechaActual.getDate() < fechaNacimiento.getDate())) {
-            fechaNacimiento--;
-    }
-    document.getElementById("fechaNacimiento").innerHTML = fechaNacimiento;
-  } */
-
-
-
-
 
 ipcMain.on('logoutGoogle', async (e) => {
     settings.unsetSync(); //Borra la data del usuario en settings
@@ -241,6 +227,8 @@ ipcMain.on('addEmpleado', async (e, data) => {
     }
 });
 
+
+
 ipcMain.on('cambiarEstadoEmpleado', async (e, data) => {
     const empleado = await Empleados.findById(data.id);
     let status = 'activo';
@@ -282,6 +270,8 @@ ipcMain.on('getEmpleadosActivos', async(e)=>{
     mainWindow.webContents.send('getEmpleadosActivosResponse',{activos:activos,inactivos:inactivos});
 });
 
+
+//Dashboar de Empleados.
 ipcMain.on('updateEmpleado', async (e, data) => {
     /*  const updated = await Empleados.findByIdAndUpdate(data.id,data,{new:true});
      secondWindow.webContents.send('updateEmpleadoSuccess'); */
@@ -303,6 +293,45 @@ ipcMain.on('updateEmpleado', async (e, data) => {
     if (update) {
         const updated = await Empleados.findByIdAndUpdate(data.id, data, { new: true });
         secondWindow.webContents.send('updateEmpleadoSuccess');
+    }
+});
+
+//Dashboar de Herramientas.
+ipcMain.on('getHerramientasActivos', async(e)=>{
+    let herramientas = await Herramientas.find();
+    let activos = 0;
+    let inactivos = 0;
+    herramientas.forEach(element =>{
+        if(element.estadoHerramienta==='activo'){
+            activos += 1;
+        }else{
+            inactivos +=1;
+        }
+    });
+    mainWindow.webContents.send('getHerramientasActivosResponse',{activos:activos,inactivos:inactivos});
+});
+
+ipcMain.on('updateHerramienta', async (e, data) => {
+    /*  const updated = await Herramientas.findByIdAndUpdate(data.id,data,{new:true});
+     secondWindow.webContents.send('updateHerramientaSuccess'); */
+    const listaHerramienta = await Herramientas.find().sort({ name: 1 });
+    let update = true;
+    try {
+        listaHerramienta.forEach(herramienta => {
+            if (herramienta._id.valueOf() !== data.id) {
+                if (data.documento === herramienta.documento) {
+                    secondWindow.webContents.send("updateHerramientaError");
+                    update = false;
+                    throw BreakException;
+                }
+            }
+        });
+    } catch (e) {
+        if (e !== BreakException) throw e;
+    }
+    if (update) {
+        const updated = await Herramientas.findByIdAndUpdate(data.id, data, { new: true });
+        secondWindow.webContents.send('updateHerramientaSuccess');
     }
 });
 
@@ -386,76 +415,90 @@ ipcMain.on('cargarAsignaciones', async (e, data) => {
 
 ipcMain.on('crearPrestamo', async (e, data) => {
     const herramienta = await Herramientas.findById(data.idHerramienta);
-    if((parseInt(herramienta.cantidadDisponible)-parseInt(data.cantidadPrestada))<0){
-        secondWindow.webContents.send('crearPrestamoFailed', herramienta.cantidadDisponible);
-    }else{
-        let activos = false;
-        let asignacionesExistentes = await Asignaciones.find({ idEmpleado: data.idEmpleado, idHerramienta: data.idHerramienta });
-        asignacionesExistentes = JSON.parse(JSON.stringify(asignacionesExistentes));
-        if (asignacionesExistentes.length === 0) {
-            data.estadoAsignacion = 'activo'
-            const newAsignacion = new Asignaciones(data);
-            const saved = await newAsignacion.save();
+    if ((parseInt(herramienta.cantidadDisponible)-parseInt(data.cantidadPrestada))<0) {
+      secondWindow.webContents.send('crearPrestamoFailed', herramienta.cantidadDisponible);
+    } else {
+      let activos = false;
+      let asignacionesExistentes = await Asignaciones.find({ idEmpleado: data.idEmpleado, idHerramienta: data.idHerramienta });
+      asignacionesExistentes = JSON.parse(JSON.stringify(asignacionesExistentes));
+      if (asignacionesExistentes.length === 0) {
+        data.estadoAsignacion = 'activo';
+        const newAsignacion = new Asignaciones(data);
+        newAsignacion.fechaPrestamo = moment().format('YYYY-MM-DD'); // Agregar fecha de préstamo actual
+        const saved = await newAsignacion.save();
+        const herramientaUpdate = await Herramientas.findByIdAndUpdate(
+          data.idHerramienta,
+          {
+            cantidadDisponible: (parseInt(herramienta.cantidadDisponible) - parseInt(data.cantidadPrestada)).toString()
+          }
+        );
+        secondWindow.webContents.send("crearPrestamoSuccess", data.idEmpleado);
+      } else {
+        for (let index = 0; index < asignacionesExistentes.length; index++) {
+          if (asignacionesExistentes[index].estadoAsignacion === 'activo') {
+            activos = true;
+            const updateAsignacion = await Asignaciones.findByIdAndUpdate(
+              asignacionesExistentes[index]._id,
+              {
+                cantidadPrestada: (parseInt(asignacionesExistentes[index].cantidadPrestada) + parseInt(data.cantidadPrestada)).toString(),
+                fechaPrestamo: moment().format('YYYY-MM-DD') // Agregar fecha de préstamo actual al actualizar
+              }
+            );
             const herramientaUpdate = await Herramientas.findByIdAndUpdate(
-                data.idHerramienta,
-                {
-                    cantidadDisponible: (parseInt(herramienta.cantidadDisponible) - parseInt(data.cantidadPrestada)).toString()
-                }
-            )
+              data.idHerramienta,
+              {
+                cantidadDisponible: (parseInt(herramienta.cantidadDisponible) - parseInt(data.cantidadPrestada)).toString()
+              }
+            );
             secondWindow.webContents.send("crearPrestamoSuccess", data.idEmpleado);
-        } else {
-            for (let index = 0; index < asignacionesExistentes.length; index++) {
-                if (asignacionesExistentes[index].estadoAsignacion === 'activo') {
-                    activos = true;
-                    const updateAsignacion = await Asignaciones.findByIdAndUpdate(
-                        asignacionesExistentes[index]._id,
-                        {
-                            cantidadPrestada: (parseInt(asignacionesExistentes[index].cantidadPrestada) + parseInt(data.cantidadPrestada)).toString()
-                        }
-                    )
-                    const herramientaUpdate = await Herramientas.findByIdAndUpdate(
-                        data.idHerramienta,
-                        {
-                            cantidadDisponible: (parseInt(herramienta.cantidadDisponible) - parseInt(data.cantidadPrestada)).toString()
-                        }
-                    )
-                    secondWindow.webContents.send("crearPrestamoSuccess", data.idEmpleado);
-                    break;
-                }
-            }
-            if (!activos) {
-                data.estadoAsignacion = 'activo'
-                const newAsignacion = new Asignaciones(data);
-                const saved = await newAsignacion.save();
-                const herramientaUpdate = await Herramientas.findByIdAndUpdate(
-                    data.idHerramienta,
-                    {
-                        cantidadDisponible: (parseInt(herramienta.cantidadDisponible) - parseInt(data.cantidadPrestada)).toString()
-                    }
-                )
-                secondWindow.webContents.send("crearPrestamoSuccess", data.idEmpleado);
-            }
+            break;
+          }
         }
+        if (!activos) {
+          data.estadoAsignacion = 'activo';
+          const newAsignacion = new Asignaciones(data);
+          newAsignacion.fechaPrestamo = moment().format('YYYY-MM-DD'); // Agregar fecha de préstamo actual
+          const saved = await newAsignacion.save();
+          const herramientaUpdate = await Herramientas.findByIdAndUpdate(
+            data.idHerramienta,
+            {
+              cantidadDisponible: (parseInt(herramienta.cantidadDisponible) - parseInt(data.cantidadPrestada)).toString()
+            }
+          );
+          secondWindow.webContents.send("crearPrestamoSuccess", data.idEmpleado);
+        }
+      }
     }
-});
+  });
 
-ipcMain.on('devolverHerramienta', async(e,data)=>{
+ipcMain.on('devolverHerramienta', async (e, data) => {
     let asignacion = await Asignaciones.findById(data.id);
     asignacion = JSON.parse(JSON.stringify(asignacion));
+  
+    // Agregar fecha de devolución actual
+    asignacion.fechaDevolucion = moment().format('YYYY-MM-DD');
+    
+  
     let nuevoValorCantidadPrestada = (parseInt(asignacion.cantidadPrestada) - parseInt(data.cantidadADevolver)).toString();
-    if(nuevoValorCantidadPrestada==='0'){
-        await Asignaciones.findByIdAndUpdate(asignacion._id,{estadoAsignacion:'cerrado'});
-    }else{
-        await Asignaciones.findByIdAndUpdate(asignacion._id,{cantidadPrestada: nuevoValorCantidadPrestada});
+    if (nuevoValorCantidadPrestada === '0') {
+      await Asignaciones.findByIdAndUpdate(asignacion._id, { estadoAsignacion: 'inactivo' });
+    } else {
+      await Asignaciones.findByIdAndUpdate(asignacion._id, { cantidadPrestada: nuevoValorCantidadPrestada });
     }
     const herramienta = await Herramientas.findById(asignacion.idHerramienta);
     await Herramientas.findByIdAndUpdate(asignacion.idHerramienta, {
-        cantidadDisponible: (parseInt(herramienta.cantidadDisponible)+parseInt(data.cantidadADevolver)).toString()
-    })
+      cantidadDisponible: (parseInt(herramienta.cantidadDisponible) + parseInt(data.cantidadADevolver)).toString()
+    });
+  
+    // Obtener la fecha de devolución actual
+    const fechaDevolucion = moment().format('YYYY-MM-DD');
+  
+    // Actualizar la fecha de devolución en la asignación
+    await Asignaciones.findByIdAndUpdate(asignacion._id, { fechaDevolucion });
+  
     secondWindow.webContents.send('devolverHerramientaSuccess', asignacion.idEmpleado);
-});
+  });
 
-
-
+  
 //agregar createWindow
 module.exports = { crearVentanaLogin }

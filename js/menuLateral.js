@@ -31,6 +31,11 @@ const itemsMenu = [
         ruta: "../views/herramientas.html"
     },
     {
+        icon: "fas fa-file-pdf",
+        title: "Manual",
+        ruta: "../pdf/Manual_Usuario.pdf"
+    },
+    {
         icon: "fas fa-right-from-bracket",
         title: "Salir",
         ruta: ""

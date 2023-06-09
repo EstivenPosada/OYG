@@ -22,9 +22,9 @@
 
 </head>
 
-
 <body id="body" onload="loader('#idInicio')">
   <div class="menu__side" id="menu_side"></div>
+  
   <div name="menuLateral"></div>
   <main>
     <h1 class="card-text2" style="text-align: center;">OYG INGENIERIA</h1><br>
@@ -40,13 +40,23 @@
   </center>
   </div>
   <br><br>
-  <canvas id="myChart"></canvas>
-  <!-- <script src="app.js"></script> -->
+  <div style="width: 100%; text-align: center;">
+    <div style="width: 500px; display: flex; justify-content: flex-end; margin: 0 auto;">
+      <div id="bar"         style="width: 250px; height: 250px; float: right; margin-left: auto;"></div>
+      <div id="donut-chart" style="width: 250px; height: 250px; float: right;"></div>
 
+
+      
+
+      <!-- <div id="bar2"        style="width: 250px; height: 250px; float: right;"></div> -->
+    </div>
+  </div>
+
+  
+  
+  
   <script src="../js/menuLateral.js"></script>
-  <canvas id="Chart.js"></canvas>
   <script src="../js/principal.js"></script>
-  <!-- <button onclick="updateChart()">Actualizar gráfica</button> -->
 </body>
 
 </html>

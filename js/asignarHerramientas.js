@@ -1,5 +1,6 @@
 const { ipcRenderer } = require("electron");
 const Swal = require('sweetalert2');
+const moment = require('moment');
 
 let maxCantidadDevolver = '';
 let idAsignacion = '';
@@ -121,6 +122,44 @@ function renderizarAsignaciones(asignaciones) {
                 },
                 "orderable": false
             },
+            {
+                "targets": 4,
+                "data": null,
+                "render": function(row) {
+                  var fechaPrestamo = row.fechaPrestamo ? moment(row.fechaPrestamo, 'YYYY-MM-DD').format('DD/MM/YYYY') : '';
+                  if (row.estadoAsignacion === 'cerrado') {
+                    return "<div class='btn-group' role='group' aria-label='Basic example'></div>";
+                  } else {
+                    return "<div>" + fechaPrestamo + "</div>";
+                  }
+                },
+                "orderable": false
+              },
+              {
+                "targets": 5,
+                "data": null,
+                "render": function(row) {
+                  var fechaDevolucion = row.fechaDevolucion ? moment(row.fechaDevolucion, 'YYYY-MM-DD').format('DD/MM/YYYY') : '';
+                  if (row.estadoAsignacion === 'activo') {
+                    return "<div class='btn-group' role='group' aria-label='Basic example'></div>";
+                  } else {
+                    return "<div>" + fechaDevolucion + "</div>";
+                  }
+                },
+                "orderable": false
+              },
+              {
+                "targets": 6,
+                data: 'estadoADevolver',
+                render: function (data) {
+                  if (data !== undefined) {
+                    return data;
+                  } else {
+                    return '';
+                  }
+                },
+                "orderable": false
+            },
         ],
         destroy: true,
         "responsive": true,
@@ -175,6 +214,39 @@ ipcRenderer.on('devolverHerramientaSuccess', (e, data) => {
         }, 3000)
     );
 });
+
+ipcRenderer.on('devolverHerramientaParcialSuccess', (e, data) => {
+    Swal.fire(
+        {
+            title: 'Acción Exitosa!',
+            text: 'Logramos hacer la devolución del préstamo Parcial',
+            icon: 'success',
+            showConfirmButton: false
+        }
+    ).then(
+        setTimeout(() => {
+            Swal.close();
+            reloadTable(data);
+            $('#herramienta').val('x').change();
+            $('#cantidadAPrestar').val('');
+            $('#cantidadADevolver').val('');
+            $('#EstadoADevolver').val('');
+            $('#herramienta').attr('disabled', false);
+            $('#divCantidadADevolver').addClass('visually-hidden');
+            $('#cantidadADevolver').prop('required', false);
+            $('#divEstadoADevolver').addClass('visually-hidden');
+            $('#EstadoADevolver').prop('required', false);
+            $('#cantidadAPrestar').prop('required', true);
+            $('#divCantidadAPrestar').removeClass('visually-hidden');
+            $('#herramienta').prop('required', true);
+            $('#divNombreHerramienta').removeClass('visually-hidden');
+            maxCantidadDevolver = '';
+            devolviendoHerramienta = false;
+            idAsignacion = '';
+        }, 3000)
+    );
+});
+
 
 $('#addPrestamo').click(() => {
     if (devolviendoHerramienta) {
@@ -343,3 +415,13 @@ function reloadTable(_id) {
     $(".container").addClass('visually-hidden')
     ipcRenderer.send('cargarAsignaciones', _id);
 }
+
+ipcRenderer.on('cargarAsignaciones', (e, data) => {
+
+    $("#spinner").addClass('visually-hidden')
+    $(".container").removeClass('visually-hidden')
+    let table = $('#tableAsignaciones').DataTable();
+    table.clear();
+    table.rows.add(data);
+    table.draw();
+    });  

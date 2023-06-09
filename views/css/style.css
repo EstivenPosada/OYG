@@ -30,6 +30,12 @@ header{
     z-index: 200;
 }
 
+.dashboard-container {
+    width: 50%; /* ajusta el ancho según tus necesidades */
+    float: right; /* establece la posición a la derecha */
+  }
+
+
 .icon__menu{
     width: 50px;
     height: 100%;

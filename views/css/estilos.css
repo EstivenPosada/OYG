@@ -8,6 +8,12 @@
     font-family: 'Open Sans', sans-serif;
 }
 
+
+.container {
+    width: 50%; /* ajusta el ancho según tus necesidades */
+    float: right; /* establece la posición a la derecha */
+  }
+
 body {
     margin-left: 80px;
     /* margin-top: 80px; */
