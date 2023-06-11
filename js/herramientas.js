@@ -114,7 +114,7 @@ function renderHerramientas(herramientas)
             "targets": 4,
             data: 'id',
             render: function(data){
-                return "<div class='btn-group' role='group' aria-label='Basic example'><button type='button' class='btn btn-sm btn-outline-warning' onclick='statusHerramienta("+`"`+data+`"`+")' title='Cambiar Estado'><i class='bi bi-toggles'></i></button><button type='button' class='btn btn-sm btn-outline-success' onclick='actualizarDatosHerramienta("+`"`+data+`"`+")' title='Editar'><i class='bi bi-pencil-square'></i></button><button type='button' class='btn btn-sm btn-outline-info' onclick='verInfoHerramienta("+`"`+data+`"`+")' title='Ver Info'><i class='bi bi-eye'></i></button></div>"
+                return "<div class='btn-group' role='group' aria-label='Basic example'><button type='button' class='btn btn-sm btn-outline-danger' onclick='statusHerramienta("+`"`+data+`"`+")' title='Cambiar Estado'><i class='bi bi-toggles'></i></button><button type='button' class='btn btn-sm btn-outline-success' onclick='actualizarDatosHerramienta("+`"`+data+`"`+")' title='Editar'><i class='bi bi-pencil-square'></i></button><button type='button' class='btn btn-sm btn-outline-info' onclick='verInfoHerramienta("+`"`+data+`"`+")' title='Ver Info'><i class='bi bi-eye'></i></button></div>"
             },
             "orderable": false
         },

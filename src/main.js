@@ -470,34 +470,33 @@ ipcMain.on('crearPrestamo', async (e, data) => {
     }
   });
 
-ipcMain.on('devolverHerramienta', async (e, data) => {
+  ipcMain.on('devolverHerramienta', async (e, data) => {
     let asignacion = await Asignaciones.findById(data.id);
     asignacion = JSON.parse(JSON.stringify(asignacion));
-  
+
     // Agregar fecha de devolución actual
     asignacion.fechaDevolucion = moment().format('YYYY-MM-DD');
-    
-  
+    asignacion.estadoEntrega = data.estadoEntrega; // Obtener el estado de entrega de los materiales
+
     let nuevoValorCantidadPrestada = (parseInt(asignacion.cantidadPrestada) - parseInt(data.cantidadADevolver)).toString();
     if (nuevoValorCantidadPrestada === '0') {
-      await Asignaciones.findByIdAndUpdate(asignacion._id, { estadoAsignacion: 'inactivo' });
+        await Asignaciones.findByIdAndUpdate(asignacion._id, { estadoAsignacion: 'inactivo' });
     } else {
-      await Asignaciones.findByIdAndUpdate(asignacion._id, { cantidadPrestada: nuevoValorCantidadPrestada });
+        await Asignaciones.findByIdAndUpdate(asignacion._id, { cantidadPrestada: nuevoValorCantidadPrestada });
     }
     const herramienta = await Herramientas.findById(asignacion.idHerramienta);
     await Herramientas.findByIdAndUpdate(asignacion.idHerramienta, {
-      cantidadDisponible: (parseInt(herramienta.cantidadDisponible) + parseInt(data.cantidadADevolver)).toString()
+        cantidadDisponible: (parseInt(herramienta.cantidadDisponible) + parseInt(data.cantidadADevolver)).toString()
     });
-  
+
     // Obtener la fecha de devolución actual
     const fechaDevolucion = moment().format('YYYY-MM-DD');
-  
-    // Actualizar la fecha de devolución en la asignación
-    await Asignaciones.findByIdAndUpdate(asignacion._id, { fechaDevolucion });
-  
-    secondWindow.webContents.send('devolverHerramientaSuccess', asignacion.idEmpleado);
-  });
 
+    // Actualizar la fecha de devolución y estado de entrega en la asignación
+    await Asignaciones.findByIdAndUpdate(asignacion._id, { fechaDevolucion, estadoEntrega: asignacion.estadoEntrega });
+
+    secondWindow.webContents.send('devolverHerramientaSuccess', asignacion.idEmpleado);
+});
   
 //agregar createWindow
 module.exports = { crearVentanaLogin }

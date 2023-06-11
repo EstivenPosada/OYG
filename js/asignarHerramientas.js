@@ -425,3 +425,5 @@ ipcRenderer.on('cargarAsignaciones', (e, data) => {
     table.rows.add(data);
     table.draw();
     });  
+
+    
