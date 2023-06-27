@@ -203,9 +203,9 @@ ipcMain.on('close-sencond', () => {
 });
 
 ipcMain.on('addEmpleado', async (e, data) => {
-    const newEmpleado = new Empleados(data);
+    /* const newEmpleado = new Empleados(data);
     const saved = await newEmpleado.save();
-    secondWindow.webContents.send("addEmpleadoSuccess", JSON.stringify(saved));
+    secondWindow.webContents.send("addEmpleadoSuccess", JSON.stringify(saved)); */
     const listaEmpleados = await Empleados.find().sort({ name: 1 });
     let guardar = true;
     try {
@@ -255,18 +255,18 @@ ipcMain.on('verInfoEmpleado', async (e, data) => {
     newWindow(object);
 });
 
-ipcMain.on('getEmpleadosActivos', async(e)=>{
+ipcMain.on('getEmpleadosActivos', async (e) => {
     let empleados = await Empleados.find();
     let activos = 0;
     let inactivos = 0;
-    empleados.forEach(element =>{
-        if(element.estadoEmpleado==='activo'){
+    empleados.forEach(element => {
+        if (element.estadoEmpleado === 'activo') {
             activos += 1;
-        }else{
-            inactivos +=1;
+        } else {
+            inactivos += 1;
         }
     });
-    mainWindow.webContents.send('getEmpleadosActivosResponse',{activos:activos,inactivos:inactivos});
+    mainWindow.webContents.send('getEmpleadosActivosResponse', { activos: activos, inactivos: inactivos });
 });
 
 
@@ -296,18 +296,18 @@ ipcMain.on('updateEmpleado', async (e, data) => {
 });
 
 //Dashboar de Herramientas.
-ipcMain.on('getHerramientasActivos', async(e)=>{
+ipcMain.on('getHerramientasActivos', async (e) => {
     let herramientas = await Herramientas.find();
     let activos = 0;
     let inactivos = 0;
-    herramientas.forEach(element =>{
-        if(element.estadoHerramienta==='activo'){
+    herramientas.forEach(element => {
+        if (element.estadoHerramienta === 'activo') {
             activos += 1;
-        }else{
-            inactivos +=1;
+        } else {
+            inactivos += 1;
         }
     });
-    mainWindow.webContents.send('getHerramientasActivosResponse',{activos:activos,inactivos:inactivos});
+    mainWindow.webContents.send('getHerramientasActivosResponse', { activos: activos, inactivos: inactivos });
 });
 
 ipcMain.on('updateHerramienta', async (e, data) => {
@@ -342,16 +342,26 @@ ipcMain.on('getHerramientas', async (e) => {
 });
 
 ipcMain.on('addHerramienta', async (e, data) => {
-    const mismaHerramienta = await Herramientas.findOne({nombre:data.nombre});
-    if(mismaHerramienta !== null){
+    const mismaHerramienta = await Herramientas.find();
+    var save = true;
+    mismaHerramienta.forEach(herramienta => {
+        if (procesarNombre(herramienta.nombre) === procesarNombre(data.nombre)) { save = false; }
+    });
+    if (mismaHerramienta === null) {
         secondWindow.webContents.send('errorMessage', 'Ya existe una herramienta con este nombre.');
     }
-    else{
+    if (save) {
         const newHerramienta = new Herramientas(data);
         const saved = await newHerramienta.save();
         secondWindow.webContents.send("addHerramientaSuccess", JSON.stringify(saved));
     }
 });
+
+function procesarNombre(nombre) {
+    // Convertir a minúsculas y quitar espacios
+    nombre = nombre.toLowerCase().replace(/\s/g, '');
+    return nombre;
+}
 
 ipcMain.on('cambiarEstadoHerramienta', async (e, data) => {
     const herramienta = await Herramientas.findById(data.id);
@@ -369,14 +379,14 @@ ipcMain.on('cambiarEstadoHerramienta', async (e, data) => {
 
 ipcMain.on('verInfoHerramienta', async (e, data) => {
     const herramienta = await Herramientas.findById(data.id);
-    const prestamosExistentes = await Asignaciones.find({idHerramienta:data.id});
+    const prestamosExistentes = await Asignaciones.find({ idHerramienta: data.id });
     let object = {
         width: data.width,
         height: data.height,
         title: data.title,
         ruta: data.ruta,
         update: data.update,
-        info: { herramienta: herramienta, id: data.id , prestamos: JSON.stringify(prestamosExistentes)}
+        info: { herramienta: herramienta, id: data.id, prestamos: JSON.stringify(prestamosExistentes) }
     }
     newWindow(object);
 });
@@ -398,7 +408,7 @@ ipcMain.on('verHerramientasAsignadas', async (e, data) => {
         info: JSON.stringify({
             empleado: {
                 nombres: data.nombres,
-                apellidos:data.apellidos,
+                apellidos: data.apellidos,
                 id: data.id
             },
             herramientas: herramientasActivas
@@ -412,65 +422,90 @@ ipcMain.on('cargarAsignaciones', async (e, data) => {
     secondWindow.webContents.send('renderAsignaciones', JSON.stringify({ asignaciones: asignacionesEncontradas, idEmpleado: data }));
 });
 
-ipcMain.on('crearPrestamo', async (e, data) => {
-    const herramienta = await Herramientas.findById(data.idHerramienta);
-    if ((parseInt(herramienta.cantidadDisponible)-parseInt(data.cantidadPrestada))<0) {
-      secondWindow.webContents.send('crearPrestamoFailed', herramienta.cantidadDisponible);
-    } else {
+ipcMain.on('crearPrestamo', async (e, info) => {
+    let herramienta;
+    let valido = true;
+  
+    info.forEach(async function (data) {
+      herramienta = await Herramientas.findById(data.idHerramienta);
+      if ((parseInt(herramienta.cantidadDisponible) - parseInt(data.cantidadPrestada)) < 0) {
+        valido = false;
+        secondWindow.webContents.send('crearPrestamoFailed', herramienta.cantidadDisponible);
+      }
+    });
+  
+    if (valido) {
       let activos = false;
-      let asignacionesExistentes = await Asignaciones.find({ idEmpleado: data.idEmpleado, idHerramienta: data.idHerramienta });
-      asignacionesExistentes = JSON.parse(JSON.stringify(asignacionesExistentes));
-      if (asignacionesExistentes.length === 0) {
-        data.estadoAsignacion = 'activo';
-        const newAsignacion = new Asignaciones(data);
-        newAsignacion.fechaPrestamo = moment().format('YYYY-MM-DD'); // Agregar fecha de préstamo actual
-        const saved = await newAsignacion.save();
-        const herramientaUpdate = await Herramientas.findByIdAndUpdate(
-          data.idHerramienta,
-          {
-            cantidadDisponible: (parseInt(herramienta.cantidadDisponible) - parseInt(data.cantidadPrestada)).toString()
-          }
-        );
-        secondWindow.webContents.send("crearPrestamoSuccess", data.idEmpleado);
-      } else {
-        for (let index = 0; index < asignacionesExistentes.length; index++) {
-          if (asignacionesExistentes[index].estadoAsignacion === 'activo') {
-            activos = true;
-            const updateAsignacion = await Asignaciones.findByIdAndUpdate(
-              asignacionesExistentes[index]._id,
-              {
-                cantidadPrestada: (parseInt(asignacionesExistentes[index].cantidadPrestada) + parseInt(data.cantidadPrestada)).toString(),
-                fechaPrestamo: moment().format('YYYY-MM-DD') // Agregar fecha de préstamo actual al actualizar
-              }
-            );
-            const herramientaUpdate = await Herramientas.findByIdAndUpdate(
-              data.idHerramienta,
-              {
-                cantidadDisponible: (parseInt(herramienta.cantidadDisponible) - parseInt(data.cantidadPrestada)).toString()
-              }
-            );
-            secondWindow.webContents.send("crearPrestamoSuccess", data.idEmpleado);
-            break;
-          }
-        }
-        if (!activos) {
+      let asignacionesExistentes;
+      let newAsignacion;
+      let saved;
+      let herramientaUpdate;
+      let updateAsignacion;
+  
+      info.forEach(async function (data) {
+        activos = false;
+        asignacionesExistentes = await Asignaciones.find({ idEmpleado: data.idEmpleado, idHerramienta: data.idHerramienta });
+        asignacionesExistentes = JSON.parse(JSON.stringify(asignacionesExistentes));
+  
+        if (asignacionesExistentes.length === 0) {
           data.estadoAsignacion = 'activo';
-          const newAsignacion = new Asignaciones(data);
+          newAsignacion = new Asignaciones(data);
           newAsignacion.fechaPrestamo = moment().format('YYYY-MM-DD'); // Agregar fecha de préstamo actual
-          const saved = await newAsignacion.save();
-          const herramientaUpdate = await Herramientas.findByIdAndUpdate(
+          newAsignacion.fechaDevolucion = moment().add(1, 'month').format('YYYY-MM-DD'); // Agregar fecha de devolución (1 mes después)
+          saved = await newAsignacion.save();
+  
+          herramientaUpdate = await Herramientas.findByIdAndUpdate(
             data.idHerramienta,
             {
               cantidadDisponible: (parseInt(herramienta.cantidadDisponible) - parseInt(data.cantidadPrestada)).toString()
             }
           );
-          secondWindow.webContents.send("crearPrestamoSuccess", data.idEmpleado);
+        } else {
+          for (let index = 0; index < asignacionesExistentes.length; index++) {
+            if (asignacionesExistentes[index].estadoAsignacion === 'activo') {
+              activos = true;
+              updateAsignacion = await Asignaciones.findByIdAndUpdate(
+                asignacionesExistentes[index]._id,
+                {
+                  cantidadPrestada: (parseInt(asignacionesExistentes[index].cantidadPrestada) + parseInt(data.cantidadPrestada)).toString(),
+                  fechaPrestamo: moment().format('YYYY-MM-DD'), // Agregar fecha de préstamo actual al actualizar
+                  fechaDevolucion: moment().add(1, 'month').format('YYYY-MM-DD') // Agregar fecha de devolución (1 mes después)
+                }
+              );
+  
+              herramientaUpdate = await Herramientas.findByIdAndUpdate(
+                data.idHerramienta,
+                {
+                  cantidadDisponible: (parseInt(herramienta.cantidadDisponible) - parseInt(data.cantidadPrestada)).toString()
+                }
+              );
+  
+              break;
+            }
+          }
+  
+          if (!activos) {
+            data.estadoAsignacion = 'activo';
+            newAsignacion = new Asignaciones(data);
+            newAsignacion.fechaPrestamo = moment().format('YYYY-MM-DD'); // Agregar fecha de préstamo actual
+            newAsignacion.fechaDevolucion = moment().add(1, 'month').format('YYYY-MM-DD'); // Agregar fecha de devolución (1 mes después)
+            saved = await newAsignacion.save();
+  
+            herramientaUpdate = await Herramientas.findByIdAndUpdate(
+              data.idHerramienta,
+              {
+                cantidadDisponible: (parseInt(herramienta.cantidadDisponible) - parseInt(data.cantidadPrestada)).toString()
+              }
+            );
+          }
         }
-      }
+      });
+  
+      secondWindow.webContents.send("crearPrestamoSuccess", info[0].idEmpleado);
     }
   });
 
-  ipcMain.on('devolverHerramienta', async (e, data) => {
+ipcMain.on('devolverHerramienta', async (e, data) => {
     let asignacion = await Asignaciones.findById(data.id);
     asignacion = JSON.parse(JSON.stringify(asignacion));
 
@@ -497,6 +532,6 @@ ipcMain.on('crearPrestamo', async (e, data) => {
 
     secondWindow.webContents.send('devolverHerramientaSuccess', asignacion.idEmpleado);
 });
-  
+
 //agregar createWindow
 module.exports = { crearVentanaLogin }

@@ -179,35 +179,24 @@
 				<div class="col-lg-4 col-sm-12">
 					<div class="mb-3">
 					  <label class="form-label is-required" for="fechaNacimiento">Fecha de Nacimiento</label>
-					  <input type="date" id="fechaNacimiento" class="form-control" required>
+					  <input type="date" min="1950-01-01" id="fechaNacimiento" class="form-control" required>
 					  <div id="fechaNacimiento-error" class="invalid-feedback">La fecha de nacimiento no es válida</div>
 					</div>
 				  </div>
 				  
 				  <script>
 					const fechaNacimientoInput = document.getElementById('fechaNacimiento');
-					fechaNacimientoInput.addEventListener('input', validarFechaNacimiento);
+					const invalidFeedbackFN = fechaNacimientoInput.nextElementSibling;
 				  
-					function validarFechaNacimiento() {
-					  const fechaNacimiento = new Date(fechaNacimientoInput.value);
-					  const hoy = new Date();
-				  
-					  if (isNaN(fechaNacimiento) || fechaNacimiento >= hoy) {
-						mostrarError();
+					fechaNacimientoInput.addEventListener('input', function() {
+					  if (fechaNacimientoInput.validity.valid) {
+						fechaNacimientoInput.classList.remove('is-invalid');
+						invalidFeedbackFN.style.display = 'none';
 					  } else {
-						ocultarError();
+						fechaNacimientoInput.classList.add('is-invalid');
+						invalidFeedbackFN.style.display = 'block';
 					  }
-					}
-				  
-					function mostrarError() {
-					  fechaNacimientoInput.classList.add('is-invalid');
-					  document.getElementById('fechaNacimiento-error').style.display = 'block';
-					}
-				  
-					function ocultarError() {
-					  fechaNacimientoInput.classList.remove('is-invalid');
-					  document.getElementById('fechaNacimiento-error').style.display = 'none';
-					}
+					});
 				  </script>
 			
 			<div class="row">
@@ -222,35 +211,24 @@
 				<div class="col-lg-4 col-sm-12">
 					<div class="mb-3">
 					  <label class="form-label is-required" for="fechaIngreso">Fecha de Ingreso</label>
-					  <input type="date" id="fechaIngreso" class="form-control" required>
+					  <input type="date" min="2015-01-01" id="fechaIngreso" class="form-control" required>
 					  <div id="fechaIngreso-error" class="invalid-feedback">La fecha de ingreso no es válida</div>
 					</div>
 				  </div>
 
 				  <script>
 					const fechaIngresoInput = document.getElementById('fechaIngreso');
-					fechaIngresoInput.addEventListener('input', validarFechaIngreso);
+					const invalidFeedbackFI = fechaIngresoInput.nextElementSibling;
 				  
-					function validarFechaIngreso() {
-					  const fechaIngreso = new Date(fechaIngresoInput.value);
-					  const hoy = new Date();
-				  
-					  if (isNaN(fechaIngreso) || fechaIngreso > hoy) {
-						mostrarError(fechaIngresoInput, 'fechaIngreso-error');
+					fechaIngresoInput.addEventListener('input', function() {
+					  if (fechaIngresoInput.validity.valid) {
+						fechaIngresoInput.classList.remove('is-invalid');
+						invalidFeedbackFI.style.display = 'none';
 					  } else {
-						ocultarError(fechaIngresoInput, 'fechaIngreso-error');
+						fechaIngresoInput.classList.add('is-invalid');
+						invalidFeedbackFI.style.display = 'block';
 					  }
-					}
-				  
-					function mostrarError(input, errorId) {
-					  input.classList.add('is-invalid');
-					  document.getElementById(errorId).style.display = 'block';
-					}
-				  
-					function ocultarError(input, errorId) {
-					  input.classList.remove('is-invalid');
-					  document.getElementById(errorId).style.display = 'none';
-					}
+					});
 				  </script>
 
 				  

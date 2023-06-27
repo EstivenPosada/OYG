@@ -122,7 +122,7 @@ function renderHerramientas(herramientas)
     destroy: true,
     "responsive": true,     
     });
-    $('#listaHerramienta_filter').append("<button type='button' style='float:right' class='btn btn-warning' onclick='reloadTable()' title='Recargar Tabla'><i class='bi bi-arrow-repeat'></i></button><button type='button' style='float:right' class='btn btn-success' onclick='nuevaHerramienta()' title='Agregar Herramienta'><i class='fa-sharp fa-solid fa-screwdriver-wrench'></i></button>");
+    $('#listaHerramienta_filter').append("<button type='button' style='float:right' class='btn btn-warning' onclick='reloadTable()' title='Recargar Tabla'><i class='bi bi-arrow-repeat'></i></button><button type='button' style='float:right' class='btn btn-success' onclick='nuevaHerramienta()' title='Agregar Herramienta'><i class='fa-solid fa-user-plus'></i></button>");
     setTimeout(()=>{       
         $("#spinner").addClass('visually-hidden')
         $(".container").removeClass('visually-hidden')

@@ -250,7 +250,7 @@ function renderPrestamos(prestamos)
     destroy: true,
     "responsive": true,     
     });
-    /* $('#listaPrestamos_filter').append("<button type='button' style='float:right' class='btn btn-warning' onclick='reloadTable()' title='Recargar Tabla'><i class='bi bi-arrow-repeat'></i></button>");*/
+    $('#listaPrestamos_filter').append("<button type='button' style='float:right' class='btn btn-warning' onclick='reloadTable()' title='Recargar Tabla'><i class='bi bi-arrow-repeat'></i></button>");
     setTimeout(()=>{
         $(".containerLista").removeClass('visually-hidden')
     },1000);    

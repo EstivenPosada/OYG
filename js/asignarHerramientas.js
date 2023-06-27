@@ -5,6 +5,7 @@ const moment = require('moment');
 let maxCantidadDevolver = '';
 let idAsignacion = '';
 let devolviendoHerramienta = false;
+let herramientas = [];
 
 ipcRenderer.on('preview', (e, data) => {
     data = JSON.parse(data);
@@ -20,6 +21,7 @@ ipcRenderer.on('preview', (e, data) => {
             value: element.id,
             text: element.nombre
         }));
+        herramientas.push({ nombre: element.nombre, id: element.id })
     });
 });
 
@@ -125,46 +127,35 @@ function renderizarAsignaciones(asignaciones) {
             {
                 "targets": 4,
                 "data": null,
-                "render": function(row) {
-                  var fechaPrestamo = row.fechaPrestamo ? moment(row.fechaPrestamo, 'YYYY-MM-DD').format('DD/MM/YYYY') : '';
-                  if (row.estadoAsignacion === 'cerrado') {
-                    return "<div class='btn-group' role='group' aria-label='Basic example'></div>";
-                  } else {
-                    return "<div>" + fechaPrestamo + "</div>";
-                  }
-                },
-                "orderable": false
-              },
-              {
-                "targets": 5,
-                "data": null,
-                "render": function(row) {
-                  var fechaDevolucion = row.fechaDevolucion ? moment(row.fechaDevolucion, 'YYYY-MM-DD').format('DD/MM/YYYY') : '';
-                  if (row.estadoAsignacion === 'activo') {
-                    return "<div class='btn-group' role='group' aria-label='Basic example'></div>";
-                  } else {
-                    return "<div>" + fechaDevolucion + "</div>";
-                  }
-                },
-                "orderable": false
-              },
-              {
-                "targets": 6,
-                data: 'estadoADevolver',
-                render: function (data) {
-                  if (data !== undefined) {
-                    return data;
-                  } else {
-                    return '';
-                  }
+                "render": function (row) {
+                    var fechaPrestamo = row.fechaPrestamo ? moment(row.fechaPrestamo, 'YYYY-MM-DD').format('DD/MM/YYYY') : '';
+                    if (row.estadoAsignacion === 'cerrado') {
+                        return "<div class='btn-group' role='group' aria-label='Basic example'></div>";
+                    } else {
+                        return "<div>" + fechaPrestamo + "</div>";
+                    }
                 },
                 "orderable": false
             },
+            {
+                "targets": 5,
+                "data": null,
+                "render": function (row) {
+                    var fechaDevolucion = row.fechaDevolucion ? moment(row.fechaDevolucion, 'YYYY-MM-DD').format('DD/MM/YYYY') : '';
+                    if (row.estadoAsignacion === 'activo') {
+                        return "<div class='btn-group' role='group' aria-label='Basic example'></div>";
+                    } else {
+                        return "<div>" + fechaDevolucion + "</div>";
+                    }
+                },
+                "orderable": false
+            },
+           
         ],
         destroy: true,
         "responsive": true,
     });
-    $('#listaAsignaciones_filter').append("<button type='button' style='float:right' class='btn btn-warning' onclick='reloadTable(" + `"` + asignaciones.idEmpleado + `"` + ")' title='Recargar Tabla'><i class='fa-solid fa-arrows-repeat'></i></button>");
+    $('#listaAsignaciones_filter').append("<button type='button' style='float:right' class='btn btn-warning' onclick='reloadTable(" + `"` + asignaciones.idEmpleado + `"` + ")' title='Recargar Tabla'><i class='bi bi-arrow-repeat'></i></button>");
     setTimeout(() => {
         $(".container").removeClass('visually-hidden')
     }, 1000);
@@ -247,7 +238,6 @@ ipcRenderer.on('devolverHerramientaParcialSuccess', (e, data) => {
     );
 });
 
-
 $('#addPrestamo').click(() => {
     if (devolviendoHerramienta) {
         if ($('#cantidadADevolver').val().length === 0) {
@@ -282,7 +272,7 @@ $('#addPrestamo').click(() => {
                 }, 3000)
             );
         }
-        else if($('#cantidadADevolver').val()==='00' || $('#cantidadADevolver').val()==='000' || $('#cantidadADevolver').val()==='0'){
+        else if ($('#cantidadADevolver').val() === '00' || $('#cantidadADevolver').val() === '000' || $('#cantidadADevolver').val() === '0') {
             Swal.fire(
                 {
                     title: 'Acción Fallida!',
@@ -298,15 +288,31 @@ $('#addPrestamo').click(() => {
                 }, 3000)
             );
         }
-        else{
+        else {
             ipcRenderer.send('devolverHerramienta', { id: idAsignacion, cantidadADevolver: $('#cantidadADevolver').val() });
         }
-    } else {
-        if ($('#herramienta').val() === 'x') {
+    }
+    var asign = [];
+    var asignaciones = document.getElementsByClassName('asignacion');
+    for (var i = 0; i < asignaciones.length; i++) {
+        var obj = {
+            idHerramienta: asignaciones[i].getElementsByClassName('herr')[0].options[asignaciones[i].getElementsByClassName('herr')[0].selectedIndex].value,
+            cantidadPrestada: asignaciones[i].getElementsByClassName('canti')[0].value,
+            nombreHerramienta: asignaciones[i].getElementsByClassName('herr')[0].options[asignaciones[i].getElementsByClassName('herr')[0].selectedIndex].text,
+            idEmpleado: $('#idEmpleado').val(),
+            nombreEmpleado: $('#nombreEmpleado').val(),
+            apellidosEmpleado: $('#apellidosEmpleado').val(),
+        };
+        asign.push(obj);
+    }
+    let valido = true;
+    asign.forEach(a => {
+        if (a.idHerramienta === '') {
+            valido = false;
             Swal.fire(
                 {
                     title: 'Acción Fallida!',
-                    text: 'No se ha seleccionado una herramienta',
+                    text: 'No se ha seleccionado una herramienta en el primer campo',
                     icon: 'error',
                     showConfirmButton: false
                 }
@@ -316,8 +322,9 @@ $('#addPrestamo').click(() => {
                     $(".container").removeClass('visually-hidden');
                     Swal.close();
                 }, 3000)
-            );
-        } else if ($('#cantidadAPrestar').val() === '') {
+            ); 
+        } else if (a.cantidadPrestada === 'x') {
+            valido = false;
             Swal.fire(
                 {
                     title: 'Acción Fallida!',
@@ -332,7 +339,8 @@ $('#addPrestamo').click(() => {
                     Swal.close();
                 }, 3000)
             );
-        } else if (parseInt($('#cantidadAPrestar').val()) < 1) {
+        } else if (parseInt(a.cantidadPrestada) < 1) {
+            valido = false;
             Swal.fire(
                 {
                     title: 'Acción Fallida!',
@@ -347,37 +355,46 @@ $('#addPrestamo').click(() => {
                     Swal.close();
                 }, 3000)
             );
-        } else {
-            let obj = {
-                idHerramienta: $('#herramienta').val(),
-                nombreHerramienta: $('#herramienta option:selected').text(),
-                cantidadPrestada: $('#cantidadAPrestar').val(),
-                idEmpleado: $('#idEmpleado').val(),
-                nombreEmpleado: $('#nombreEmpleado').val(),
-                apellidosEmpleado: $('#apellidosEmpleado').val(),
-            };
-            ipcRenderer.send('crearPrestamo', obj);
         }
+    })
+    if (valido) {
+        console.log(asign);
+        ipcRenderer.send('crearPrestamo', asign);
     }
+
 });
 
 ipcRenderer.on('crearPrestamoSuccess', (e, data) => {
-    Swal.fire(
-        {
-            title: 'Acción Exitosa!',
-            text: 'Logramos hacer el préstamo exitosamente',
-            icon: 'success',
-            showConfirmButton: false
-        }
-    ).then(
-        setTimeout(() => {
-            Swal.close();
-            $('#herramienta').val('x').change();
-            $('#cantidadAPrestar').val('');
-            reloadTable(data);
-        }, 3000)
-    );
-});
+    const fechaPrestamo = new Date(); // Get the current date
+    const fechaDevolucion = new Date(fechaPrestamo.getFullYear(), fechaPrestamo.getMonth() + 1, fechaPrestamo.getDate()); // Add one month to the current date
+  
+    Swal.fire({
+      title: 'Acción Exitosa!',
+      text: 'Logramos hacer el préstamo exitosamente',
+      icon: 'success',
+      showConfirmButton: false
+    }).then(() => {
+      $('#herramienta').val('x').change();
+      $('#cantidadAPrestar').val('');
+      var elements = document.querySelectorAll(".asignacion.adicional");
+      elements.forEach(function (element) {
+        element.remove();
+      });
+  
+      reloadTable(data);
+  
+      // Muestra el mensaje de la fecha de devolución
+      Swal.fire({
+        title: 'Fechas',
+        html: `La fecha de préstamo es: ${fechaPrestamo.toLocaleDateString()}<br>
+               La fecha limite de devolución es: ${fechaDevolucion.toLocaleDateString()}`,
+        icon: 'info',
+        confirmButtonText: 'Aceptar'
+      });
+    });
+  });
+  
+  
 
 ipcRenderer.on('crearPrestamoFailed', (e, data) => {
     Swal.fire(
@@ -424,6 +441,78 @@ ipcRenderer.on('cargarAsignaciones', (e, data) => {
     table.clear();
     table.rows.add(data);
     table.draw();
-    });  
+});
 
-    
+function agregarCampo() {
+    var camposAsignacion = document.getElementById('camposAsignacion');
+    var nuevoCampo = document.createElement('div');
+
+    nuevoCampo.className = 'asignacion adicional';
+    nuevoCampo.innerHTML = `
+
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="col-lg-6 col-sm-12">
+						<div class="mb-6">
+							<label class="form-label is-required" for="herramienta">Herramienta</label>
+							<!-- id="herramienta" --><select name="herramienta[]" class="form-select herr" required>
+							</select>
+							<div class="invalid-feedback">Debe seleccionar una opción</div>
+						</div>
+					</div>
+					<div class="col-lg-4 col-sm-12">
+								<div class="mb-6">
+							<label class="form-label is-required" for="cantidadAPrestar">Cantidad a prestar</label>
+							<!-- id="cantidadAPrestar" --><input type="text" name="cantidadAPrestar[]"  class="form-control numbers canti"
+								placeholder="Ingresa la cantidad" minlength="1" maxlength="3" required>
+							<div class="invalid-feedback">Debe completar este campo</div>
+						</div>
+                        </div>
+                        <button type="button" onclick="remover(this)" class="btn btn-light" style="height: 30px; width: 30px;"> 
+                        X
+                        </button>
+					</div>
+                    
+                    `;
+    camposAsignacion.appendChild(nuevoCampo);
+
+    // Capturar todos los elementos select con el atributo "name" igual a "miSelect"
+    var selects = document.querySelectorAll('select[name="herramienta[]"]');
+
+    // Recorrer los elementos select y verificar si contienen opciones
+    selects.forEach(function (select) {
+        // Verificar si el select tiene opciones
+        if (select.getElementsByTagName('option').length < 1) {
+            // Agregar valores al select
+            herramientas.forEach(herramienta => {
+                var option = document.createElement('option');
+                option.value = herramienta.id;
+                option.textContent = herramienta.nombre;
+                select.appendChild(option);
+            })
+
+        }
+    });
+
+}
+
+// Función para eliminar una copia de los campos de asignación
+function remover(button) {
+    var assignment = button.parentNode;
+    var assignmentContainer = assignment.parentNode;
+    assignmentContainer.removeChild(assignment);
+}
+
+ipcRenderer.on('preview', (e, data) => {
+    data = JSON.parse(data);
+    // Resto del código...
+
+    // Verificar el estado de inactividad del empleado
+    if (data.empleado.activo === false) {
+        Swal.fire(
+            'Empleado Inactivo',
+            'El empleado está inactivo. No se puede realizar ninguna acción.',
+            'error'
+        );
+    }
+});
+

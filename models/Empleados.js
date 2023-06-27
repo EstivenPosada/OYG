@@ -1,9 +1,14 @@
 const { model, Schema } = require("mongoose");
 
+function capitalize(val) {
+    if (typeof val !== 'string') val = '';
+    return val.toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+  }
+
 const schema = new Schema({
     /* _id: { type: String, required: true }, */
-    nombres               : { type: 'string', required: true },
-    apellidos             : { type: 'string', required: true },
+    nombres               : { type: String, required: true, set: capitalize },
+    apellidos             : { type: String, required: true, set: capitalize },
     estadoEmpleado        : { type: 'string', required: true },
     tipoDocumento         : { type: 'string', required: true },
     documento             : { type: 'string', required: true },
